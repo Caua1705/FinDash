@@ -31,8 +31,9 @@ def selecionar_colunas(df) -> dict[str,str]:
     coluna_categoria=columns.selectbox("Selecione a coluna Categoria",[a for a in list(df.columns) if a != coluna_data],help="Coluna onde está a Categoria da transação")
     coluna_tipo=columns.selectbox("Selecione a coluna Tipo(Receita/Despesa)",[a for a in list(df.columns) if a != coluna_data and a != coluna_categoria],help="Coluna onde está a tipo da transação")
     coluna_valor=columns.selectbox("Selecione a coluna Valor",[a for a in list(df.columns) if a != coluna_data and a != coluna_categoria and a != coluna_tipo],help="Coluna onde está o valor da transação")
+    selecionou_colunas=columns.button("Filtrar colunas")
     dict_colunas={"Data":coluna_data,"Categoria":coluna_categoria,"Tipo":coluna_tipo,"Valor":coluna_valor}
-    return dict_colunas
+    return dict_colunas,selecionou_colunas
 
 def formatar_colunas(df,colunas_dataframe) -> pd.DataFrame:
     df_formatado=df.copy()
@@ -84,10 +85,11 @@ def main():
     upload_planilha=configurar_upload()
     if upload_planilha is not None:
         df,tipo=carregar_dataframe(upload_planilha)
-        dict_colunas=selecionar_colunas(df)
-        df_formatado=formatar_colunas(df,dict_colunas)
-        df_filtrado=filtrar_df_formatado(df_formatado)
-        df_receitas_e_despesas,df_receitas_mensais=graficos(df_filtrado)
+        dict_colunas,selecionou_colunas=selecionar_colunas(df)
+        if selecionou_colunas:
+            df_formatado=formatar_colunas(df,dict_colunas)
+            df_filtrado=filtrar_df_formatado(df_formatado)
+            df_receitas_e_despesas,df_receitas_mensais=graficos(df_filtrado)
 
 if __name__ == "__main__":
     main()
