@@ -88,7 +88,7 @@ def graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
         st.subheader("Categorias com maiores Receitas")
         if len(df_receitas_mensais)>2:
             df_receitas_mensais=df_receitas_mensais.loc[0:2]
-        fig2=px.pie(df_receitas_mensais,names="Categoria",values="Valor",title="Distribuição das maiores Receitas",color="Categoria",color_discrete_sequence=px.colors.qualitative.Set2,hole=0.3)
+        fig2=px.pie(df_receitas_mensais,names="Categoria",values="Valor",title="Distribuição das maiores Receitas",color="Categoria")
         fig2.update_traces(textinfo="percent+label",pull=[0.1, 0, 0])       
         col2.plotly_chart(fig2)
     st.divider()
