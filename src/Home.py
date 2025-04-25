@@ -86,10 +86,10 @@ def graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
                 labels={"Categoria": "Categoria", "valor": "Valor"},  
                 title="Receitas e Despesas por Categoria")
     fig1.update_layout(
-            xaxis_tickangle=-45,  # Rotacionando os nomes das categorias para melhor visualização
+            xaxis_tickangle=-45,  
             xaxis_title="Categoria",
             yaxis_title="Valor",
-            showlegend=True  # Mostrar legenda para 'Receita' e 'Despesa'
+            showlegend=True  
         )
     col1.plotly_chart(fig1)
     with col2:                  
