@@ -89,7 +89,7 @@ def graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
         if len(df_receitas_mensais)>2:
             df_receitas_mensais=df_receitas_mensais.loc[0:2]
         fig2=px.pie(df_receitas_mensais,names="Categoria",values="Valor",title="Distribuição das maiores Receitas",color="Categoria")
-        fig2.update_traces(textinfo="percent+label",pull=[0.1, 0, 0])       
+        fig2.update_traces(textinfo="percent+label")       
         col2.plotly_chart(fig2)
     st.divider()
     return df_receitas_e_despesas,df_receitas_mensais
