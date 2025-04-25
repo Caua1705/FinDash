@@ -31,10 +31,9 @@ def selecionar_colunas(df) -> tuple[dict[str,str], bool]:
     coluna_categoria=columns.selectbox("Selecione a coluna Categoria",[a for a in list(df.columns) if a != coluna_data],help="Coluna onde está a Categoria da transação")
     coluna_tipo=columns.selectbox("Selecione a coluna Tipo(Receita/Despesa)",[a for a in list(df.columns) if a != coluna_data and a != coluna_categoria],help="Coluna onde está a tipo da transação")
     coluna_valor=columns.selectbox("Selecione a coluna Valor",[a for a in list(df.columns) if a != coluna_data and a != coluna_categoria and a != coluna_tipo],help="Coluna onde está o valor da transação")
-    visualizar_dashboard=columns.button("Visualizar Dashboard")
     if "colunas_selecionadas" not in st.session_state:
         st.session_state.colunas_selecionadas=False
-    if visualizar_dashboard:
+    if columns.button("Visualizar Dashboard"):
         st.session_state.colunas_selecionadas=True
     dict_colunas={"Data":coluna_data,
                   "Categoria":coluna_categoria,
