@@ -79,18 +79,8 @@ def graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
                                                        aggfunc="sum",
                                                        fill_value=0).reset_index()
         st.subheader("Total de Receitas e Despesas")
-    fig1=px.bar(df_receitas_e_despesas,
-                x="Categoria",
-                y=["receita","despesa"],
-                barmode="group",
-                labels={"Categoria": "Categoria", "valor": "Valor"},  
-                title="Receitas e Despesas por Categoria")
-    fig1.update_layout(
-            xaxis_tickangle=-45,  
-            xaxis_title="Categoria",
-            yaxis_title="Valor",
-            showlegend=True  
-        )
+    fig1=px.bar(df_receitas_e_despesas,x="Categoria",y=["receita","despesa"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title="Receitas e Despesas por Categoria")
+    fig1.update_layout(xaxis_tickangle=-45,  xaxis_title="Categoria",yaxis_title="Valor",showlegend=True)
     col1.plotly_chart(fig1)
     with col2:                  
         receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="receita"]
@@ -99,7 +89,8 @@ def graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
         st.subheader("Categorias com maiores Receitas")
         if len(df_receitas_mensais)>2:
             df_receitas_mensais=df_receitas_mensais.loc[0:2]
-        fig2=px.pie(df_receitas_mensais,names="Categoria",values="Valor")
+        fig2=px.pie(df_receitas_mensais,names="Categoria",values="Valor",title="Distribuição das maiores Receitas",color="Categoria",color_discrete_sequence=px.colors.qualitative.Set2,hole=0.3)
+        fig2.update_traces(textinfo="percent+label",pull=[0.1, 0, 0])       
         col2.plotly_chart(fig2)
     st.divider()
     return df_receitas_e_despesas,df_receitas_mensais
