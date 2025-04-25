@@ -82,7 +82,7 @@ def graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
     fig1=px.bar(df_receitas_e_despesas,
                 x="Categoria",
                 y=["receita","despesa"],
-                barmode="stack",
+                barmode="group",
                 labels={"Categoria": "Categoria", "valor": "Valor"},  
                 title="Receitas e Despesas por Categoria")
     fig1.update_layout(
