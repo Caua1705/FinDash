@@ -79,7 +79,18 @@ def graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
                                                        aggfunc="sum",
                                                        fill_value=0).reset_index()
         st.subheader("Total de Receitas e Despesas")
-    fig1=px.bar(df_receitas_e_despesas,x="Categoria",y=["receita","despesa"],barmode="stack")
+    fig1=px.bar(df_receitas_e_despesas,
+                x="Categoria",
+                y=["receita","despesa"],
+                barmode="stack",
+                labels={"Categoria": "Categoria", "valor": "Valor"},  
+                title="Receitas e Despesas por Categoria")
+    fig1.update_layout(
+            xaxis_tickangle=-45,  # Rotacionando os nomes das categorias para melhor visualização
+            xaxis_title="Categoria",
+            yaxis_title="Valor",
+            showlegend=True  # Mostrar legenda para 'Receita' e 'Despesa'
+        )
     col1.plotly_chart(fig1)
     with col2:                  
         receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="receita"]
