@@ -24,7 +24,7 @@ def carregar_dataframe(arquivo) -> tuple[pd.DataFrame,str]:
             tipo="csv"
     return df,tipo
 
-def selecionar_colunas(df) -> dict[str,str]:
+def selecionar_colunas(df) -> tuple[dict[str,str], bool]:
     columns=st.sidebar
     columns.write("### Seleção de Colunas:")
     coluna_data=columns.selectbox("Selecione a coluna Data",list(df.columns),help="Coluna onde está a data da transação")
@@ -36,8 +36,11 @@ def selecionar_colunas(df) -> dict[str,str]:
         st.session_state.colunas_selecionadas=False
     if visualizar_dashboard:
         st.session_state.colunas_selecionadas=True
-    dict_colunas={"Data":coluna_data,"Categoria":coluna_categoria,"Tipo":coluna_tipo,"Valor":coluna_valor}
-    return dict_colunas
+    dict_colunas={"Data":coluna_data,
+                  "Categoria":coluna_categoria,
+                  "Tipo":coluna_tipo,
+                  "Valor":coluna_valor}
+    return dict_colunas,st.session_state.colunas_selecionadas
 
 def formatar_colunas(df,colunas_dataframe) -> pd.DataFrame:
     df_formatado=df.copy()
@@ -74,10 +77,9 @@ def graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
                                                        columns="Tipo",
                                                        values="Valor",
                                                        aggfunc="sum",
-                                                       fill_value=0)
-        df_receitas_e_despesas=df_receitas_e_despesas.reset_index()
+                                                       fill_value=0).reset_index()
         st.subheader("Total de Receitas e Despesas")
-    fig1=px.bar(df_receitas_e_despesas,x="Categoria",y=["receita","despesa"],orientation="h",barmode="group")
+    fig1=px.bar(df_receitas_e_despesas,x="Categoria",y=["receita","despesa"],barmode="group")
     col1.plotly_chart(fig1)
     with col2:                  
         receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="receita"]
@@ -95,9 +97,10 @@ def main():
     upload_planilha=configurar_upload()
     if upload_planilha is not None:
         df,tipo=carregar_dataframe(upload_planilha)
-        dict_colunas=selecionar_colunas(df)
-        df_formatado=formatar_colunas(df,dict_colunas)
-        df_filtrado=filtrar_df_formatado(df_formatado)
-        df_receitas_e_despesas,df_receitas_mensais=graficos(df_filtrado)
+        dict_colunas,colunas_selecionadas=selecionar_colunas(df)
+        if colunas_selecionadas==True:
+            df_formatado=formatar_colunas(df,dict_colunas)
+            df_filtrado=filtrar_df_formatado(df_formatado)
+            df_receitas_e_despesas,df_receitas_mensais=graficos(df_filtrado)
 if __name__ == "__main__":
     main()
