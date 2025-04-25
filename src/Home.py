@@ -27,7 +27,7 @@ def carregar_dataframe(arquivo) -> tuple[pd.DataFrame,str]:
 def selecionar_colunas(df) -> tuple[dict[str,str], bool]:
     columns=st.sidebar
     columns.write("### Seleção de Colunas:")
-    coluna_data=columns.selectbox("Selecione a coluna Data",list(df.columns),help="Coluna onde está a data da transação")
+    coluna_data=columns.selectbox("Selecione a coluna Data(dd/mm/yyyy)",list(df.columns),help="Coluna onde está a data da transação")
     coluna_categoria=columns.selectbox("Selecione a coluna Categoria",[a for a in list(df.columns) if a != coluna_data],help="Coluna onde está a Categoria da transação")
     coluna_tipo=columns.selectbox("Selecione a coluna Tipo(Receita/Despesa)",[a for a in list(df.columns) if a != coluna_data and a != coluna_categoria],help="Coluna onde está a tipo da transação")
     coluna_valor=columns.selectbox("Selecione a coluna Valor",[a for a in list(df.columns) if a != coluna_data and a != coluna_categoria and a != coluna_tipo],help="Coluna onde está o valor da transação")
