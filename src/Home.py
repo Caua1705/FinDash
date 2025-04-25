@@ -24,16 +24,20 @@ def carregar_dataframe(arquivo) -> tuple[pd.DataFrame,str]:
             tipo="csv"
     return df,tipo
 
-def selecionar_colunas(df) -> tuple[dict[str,str],bool]:
+def selecionar_colunas(df) -> dict[str,str]:
     columns=st.sidebar
     columns.write("### Seleção de Colunas:")
     coluna_data=columns.selectbox("Selecione a coluna Data",list(df.columns),help="Coluna onde está a data da transação")
     coluna_categoria=columns.selectbox("Selecione a coluna Categoria",[a for a in list(df.columns) if a != coluna_data],help="Coluna onde está a Categoria da transação")
     coluna_tipo=columns.selectbox("Selecione a coluna Tipo(Receita/Despesa)",[a for a in list(df.columns) if a != coluna_data and a != coluna_categoria],help="Coluna onde está a tipo da transação")
     coluna_valor=columns.selectbox("Selecione a coluna Valor",[a for a in list(df.columns) if a != coluna_data and a != coluna_categoria and a != coluna_tipo],help="Coluna onde está o valor da transação")
-    selecionou_colunas=columns.button("Visualizar Dashboard")
+    visualizar_dashboard=columns.button("Visualizar Dashboard")
+    if "colunas_selecionadas" not in st.session_state:
+        st.session_state.colunas_selecionadas=False
+    if visualizar_dashboard:
+        st.session_state.colunas_selecionadas=True
     dict_colunas={"Data":coluna_data,"Categoria":coluna_categoria,"Tipo":coluna_tipo,"Valor":coluna_valor}
-    return dict_colunas,selecionou_colunas
+    return dict_colunas
 
 def formatar_colunas(df,colunas_dataframe) -> pd.DataFrame:
     df_formatado=df.copy()
@@ -42,9 +46,11 @@ def formatar_colunas(df,colunas_dataframe) -> pd.DataFrame:
                                       colunas_dataframe["Tipo"] : "Tipo",
                                       colunas_dataframe["Valor"] : "Valor"
                                       })
-    formatacao_letras=df_formatado["Tipo"].str.lower()
+    formatacao_letras_tipo=df_formatado["Tipo"].str.lower()
+    formatacao_letras_categoria=df_formatado["Categoria"].str.lower()
     coluna_formatada=pd.to_datetime(df_formatado["Data"],dayfirst=True) #Formata a coluna data do DataFrame
-    df_formatado["Tipo"]=formatacao_letras
+    df_formatado["Tipo"]=formatacao_letras_tipo
+    df_formatado["Categoria"]=formatacao_letras_categoria
     df_formatado["Data"]=coluna_formatada
     return df_formatado
 
@@ -64,16 +70,20 @@ def filtrar_df_formatado(df_formatado) -> pd.DataFrame:
 def graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
     col1,col2=st.columns(2)
     with col1:     
-        df_receitas_e_despesas=df_filtrado.groupby("Tipo")["Valor"].sum()
+        df_receitas_e_despesas=df_filtrado.pivot_table(index="Categoria",
+                                                       columns="Tipo",
+                                                       values="Valor",
+                                                       aggfunc="sum",
+                                                       fill_value=0)
         df_receitas_e_despesas=df_receitas_e_despesas.reset_index()
         st.subheader("Total de Receitas e Despesas")
-        fig1=px.bar(df_receitas_e_despesas,x="Tipo",y="Valor")
-        col1.plotly_chart(fig1)
+    fig1=px.bar(df_receitas_e_despesas,x="Categoria",y=["receita","despesa"],orientation="h",barmode="group")
+    col1.plotly_chart(fig1)
     with col2:                  
         receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="receita"]
         df_receitas_mensais=receitas_mensais.groupby("Categoria")["Valor"].sum().sort_values(ascending=False)
         df_receitas_mensais=df_receitas_mensais.reset_index()
-        st.subheader("Categorias com maior receita:")
+        st.subheader("Categorias com maiores Receitas")
         if len(df_receitas_mensais)>2:
             df_receitas_mensais=df_receitas_mensais.loc[0:2]
         fig2=px.pie(df_receitas_mensais,names="Categoria",values="Valor")
@@ -85,11 +95,9 @@ def main():
     upload_planilha=configurar_upload()
     if upload_planilha is not None:
         df,tipo=carregar_dataframe(upload_planilha)
-        dict_colunas,selecionou_colunas=selecionar_colunas(df)
-        if selecionou_colunas:
-            df_formatado=formatar_colunas(df,dict_colunas)
-            df_filtrado=filtrar_df_formatado(df_formatado)
-            df_receitas_e_despesas,df_receitas_mensais=graficos(df_filtrado)
-
+        dict_colunas=selecionar_colunas(df)
+        df_formatado=formatar_colunas(df,dict_colunas)
+        df_filtrado=filtrar_df_formatado(df_formatado)
+        df_receitas_e_despesas,df_receitas_mensais=graficos(df_filtrado)
 if __name__ == "__main__":
     main()
