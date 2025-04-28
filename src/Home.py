@@ -6,7 +6,6 @@ from pathlib import Path
 from datetime import datetime
 import tempfile
 import pdfkit
-import locale
 
 def configurar_upload():
     page_config=st.set_page_config(page_title="FinDash",layout="wide",page_icon="💲") 
@@ -109,9 +108,11 @@ def renderizar_template(filtro_mes,dict_tabelas):
     variaveis_template={"mês":filtro_mes,
                         "data": agora.strftime("%Y-%m-%d"),
                         "hora": agora.strftime("%H:%M:%S")}
-    locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+    def formatar_moeda(valor):
+        return f"R${valor:2f}"
     for chave,valor in dict_tabelas.items():
-        variaveis_template[chave]=valor.to_html(float_format= lambda x: locale.currency(x,grouping=True),index=False)
+        valor=valor.applymap(lambda x: formatar_moeda(x) if isinstance(x, (int, float)) else x)
+        variaveis_template[chave]=valor.to_html()
     template_renderizado=template.render(**variaveis_template)
     return template_renderizado
 
