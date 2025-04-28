@@ -4,6 +4,9 @@ import plotly.express as px
 from jinja2 import FileSystemLoader,Environment
 from pathlib import Path
 from datetime import datetime
+import tempfile
+import pdfkit
+import locale
 
 def configurar_upload():
     page_config=st.set_page_config(page_title="FinDash",layout="wide",page_icon="💲") 
@@ -46,10 +49,8 @@ def formatar_colunas(df,colunas_dataframe) -> pd.DataFrame:
                                       colunas_dataframe["Valor"] : "Valor"
                                       })
     formatacao_letras_tipo=df_formatado["Tipo"].str.lower()
-    formatacao_letras_categoria=df_formatado["Categoria"].str.lower()
     coluna_formatada=pd.to_datetime(df_formatado["Data"],dayfirst=True) #Formata a coluna data do DataFrame
     df_formatado["Tipo"]=formatacao_letras_tipo
-    df_formatado["Categoria"]=formatacao_letras_categoria
     df_formatado["Data"]=coluna_formatada
     return df_formatado
 
@@ -64,7 +65,9 @@ def filtrar_df_formatado(df_formatado) -> tuple[pd.DataFrame,str]:
         filtro_mes=st.selectbox("Selecione o mês:",[dict_meses[mes] for mes in meses_disponiveis])
         df_filtrado=df_formatado.loc[(df_formatado["Data"].dt.year == filtro_ano) &
                                  (df_formatado["Data"].dt.month == [k for k, v in dict_meses.items() if v == filtro_mes][0])]
-    return df_filtrado,filtro_mes
+        data_filtrada=df_filtrado["Data"].iloc[0]
+        data_referencia=data_filtrada.strftime("%Y-%m")
+    return df_filtrado,filtro_mes,data_referencia
 
 def graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
     col1,col2=st.columns(2)
@@ -73,10 +76,16 @@ def graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
                                                        columns="Tipo",
                                                        values="Valor",
                                                        aggfunc="sum",
-                                                       fill_value=0).reset_index()
+                                                       fill_value=0,
+                                                       )
+        df_receitas_e_despesas=df_receitas_e_despesas.rename(columns={"receita":"Receitas",
+                                                                      "despesa":"Despesas"}).reset_index()
+        df_receitas_e_despesas=df_receitas_e_despesas[["Categoria","Receitas","Despesas"]]
+        df_receitas_e_despesas=df_receitas_e_despesas.sort_values(by="Receitas",ascending=False)
+        df_receitas_e_despesas.columns.name=None
         st.subheader("Total de Receitas e Despesas")
-    fig1=px.bar(df_receitas_e_despesas,x="Categoria",y=["receita","despesa"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title="Receitas e Despesas por Categoria")
-    fig1.update_layout(xaxis_tickangle=-45,  xaxis_title="Categoria",yaxis_title="Valor",showlegend=True)
+    fig1=px.bar(df_receitas_e_despesas,x="Categoria",y=["Receitas","Despesas"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title="Receitas e Despesas por Categoria")
+    fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Categoria",yaxis_title="Valor",showlegend=True)
     col1.plotly_chart(fig1)
     with col2:                  
         receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="receita"]
@@ -89,17 +98,36 @@ def graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
         fig2.update_traces(textinfo="percent+label")       
         col2.plotly_chart(fig2)
     st.divider() 
-    return df_receitas_e_despesas,df_receitas_mensais
+    df_receitas_e_despesas.loc[len(df_receitas_e_despesas)] = ["TOTAL",df_receitas_e_despesas["Receitas"].sum(),df_receitas_e_despesas["Despesas"].sum()]
+    return {"tabela1": df_receitas_e_despesas,"tabela2": df_receitas_mensais}
 
-# def renderizando_template(filtro_mes):
-#     carregamento_pasta= FileSystemLoader(Path("templates"))
-#     env=Environment(loader=carregamento_pasta)
-#     template=env.get_template("template.jinja")
-    
-#     variaveis_template={"mês":filtro_mes,
-#                         "data": datetime.date(datetime.now()),
-#                         "hora": datetime.time(datetime.now()),
-#                         }
+def renderizar_template(filtro_mes,dict_tabelas):
+    carregamento_pasta= FileSystemLoader(Path(__file__).parents[1] / "templates")
+    env=Environment(loader=carregamento_pasta)
+    template=env.get_template("template.jinja")
+    agora=datetime.now()
+    variaveis_template={"mês":filtro_mes,
+                        "data": agora.strftime("%Y-%m-%d"),
+                        "hora": agora.strftime("%H:%M:%S")}
+    locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+    for chave,valor in dict_tabelas.items():
+        variaveis_template[chave]=valor.to_html(float_format= lambda x: locale.currency(x,grouping=True),index=False)
+    template_renderizado=template.render(**variaveis_template)
+    return template_renderizado
+
+def criar_pdf(template,data_referencia):
+    with tempfile.TemporaryDirectory() as dir_temp:
+        nome_arquivo=f"Relatório mensal - {data_referencia}.pdf"
+        diretorio_temporario= Path(dir_temp) / nome_arquivo
+        config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+        pdfkit.from_string(input=template,output_path=diretorio_temporario,configuration=config)
+
+        with open(diretorio_temporario, "rb") as f:
+            botao_download=st.sidebar.download_button("Clique para fazer o download do arquivo",
+                                                     data=f,
+                                                     file_name=nome_arquivo,
+                                                     mime="application/pdf")
+
 def main():
     upload_planilha=configurar_upload()
     if upload_planilha is not None:
@@ -107,7 +135,12 @@ def main():
         dict_colunas,colunas_selecionadas=selecionar_colunas(df)
         if colunas_selecionadas==True:
             df_formatado=formatar_colunas(df,dict_colunas)
-            df_filtrado,filtro_mes=filtrar_df_formatado(df_formatado)
-            df_receitas_e_despesas,df_receitas_mensais=graficos(df_filtrado)
+            df_filtrado,filtro_mes,data_referencia=filtrar_df_formatado(df_formatado)
+            dict_tabelas=graficos(df_filtrado)
+            template_renderizado=renderizar_template(filtro_mes,dict_tabelas)
+            criar_pdf(template_renderizado,data_referencia)
+    else:
+        st.session_state.pop("colunas_selecionadas", None)
+
 if __name__ == "__main__":
     main()
