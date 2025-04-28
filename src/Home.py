@@ -109,9 +109,11 @@ def renderizar_template(filtro_mes,dict_tabelas):
                         "data": agora.strftime("%Y-%m-%d"),
                         "hora": agora.strftime("%H:%M:%S")}
     def formatar_moeda(valor):
-        return f"R${valor:2f}"
+        if isinstance(valor, (int, float)):
+            return f"R${valor:.2f}"
+        return valor
     for chave,valor in dict_tabelas.items():
-        valor=valor.applymap(lambda x: formatar_moeda(x) if isinstance(x, (int, float)) else x)
+        valor=valor.applymap(lambda x: formatar_moeda(x))
         variaveis_template[chave]=valor.to_html()
     template_renderizado=template.render(**variaveis_template)
     return template_renderizado
