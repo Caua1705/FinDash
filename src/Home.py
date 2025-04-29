@@ -5,10 +5,10 @@ from jinja2 import FileSystemLoader,Environment
 from pathlib import Path
 from datetime import datetime
 import tempfile
-import pdfkit
+from openpyxl import load_workbook
 
-def configurar_upload():
-    page_config=st.set_page_config(page_title="FinDash",layout="wide",page_icon="💲") 
+def carregar_arquivo():
+    st.set_page_config(page_title="FinDash",layout="wide",page_icon="💲") 
     st.title("Planilha Financeira:")
     st.write("Escolha um arquivo do tipo CSV ou XLSX para carregar a planilha:")
     upload_planilha=st.file_uploader("Selecione o arquivo:",accept_multiple_files=False,type=["xlsx","csv"])
@@ -17,13 +17,11 @@ def configurar_upload():
 def carregar_dataframe(arquivo) -> tuple[pd.DataFrame,str]:
     if arquivo.name.endswith("xlsx"):
         df=pd.read_excel(arquivo)
-        tipo="xlsx"
     if arquivo.name.endswith("csv"):
         df=pd.read_csv(arquivo)
-        tipo="csv"
-    return df,tipo
+    return df
 
-def selecionar_colunas(df) -> tuple[dict[str,str], bool]:
+def selecionar_colunas_dataframe(df) -> tuple[dict[str,str], bool]:
     columns=st.sidebar
     columns.write("### Seleção de Colunas:")
     coluna_data=columns.selectbox("Selecione a coluna Data(dd/mm/yyyy)",list(df.columns),help="Coluna onde está a data da transação")
@@ -40,7 +38,7 @@ def selecionar_colunas(df) -> tuple[dict[str,str], bool]:
                   "Valor":coluna_valor}
     return dict_colunas,st.session_state.colunas_selecionadas
 
-def formatar_colunas(df,colunas_dataframe) -> pd.DataFrame:
+def formatar_colunas_dataframe(df,colunas_dataframe) -> pd.DataFrame:
     df_formatado=df.copy()
     df_formatado=df_formatado.rename(columns={colunas_dataframe["Data"] :"Data",
                                       colunas_dataframe["Categoria"] :"Categoria",
@@ -68,28 +66,34 @@ def filtrar_df_formatado(df_formatado) -> tuple[pd.DataFrame,str]:
         data_referencia=data_filtrada.strftime("%Y-%m")
     return df_filtrado,filtro_mes,data_referencia
 
-def graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
-    col1,col2=st.columns(2)
-    with col1:     
-        df_receitas_e_despesas=df_filtrado.pivot_table(index="Categoria",
+def gerar_dataframes_para_graficos(df_filtrado) ->tuple[pd.DataFrame,pd.DataFrame]:
+    df_receitas_despesas=df_filtrado.pivot_table(index="Categoria",
                                                        columns="Tipo",
                                                        values="Valor",
                                                        aggfunc="sum",
                                                        fill_value=0,
                                                        )
-        df_receitas_e_despesas=df_receitas_e_despesas.rename(columns={"receita":"Receitas",
-                                                                      "despesa":"Despesas"}).reset_index()
-        df_receitas_e_despesas=df_receitas_e_despesas[["Categoria","Receitas","Despesas"]]
-        df_receitas_e_despesas=df_receitas_e_despesas.sort_values(by="Receitas",ascending=False)
-        df_receitas_e_despesas.columns.name=None
+    df_receitas_despesas=df_receitas_despesas.rename(columns={"receita":"Receitas",
+                                                                "despesa":"Despesas"}).reset_index()
+    df_receitas_despesas=df_receitas_despesas[["Categoria","Receitas","Despesas"]]
+    df_receitas_despesas=df_receitas_despesas.sort_values(by="Receitas",ascending=False)
+    df_receitas_despesas.columns.name=None
+    df_receitas_despesas.loc[len(df_receitas_despesas)] = ["TOTAL",
+                                                           df_receitas_despesas["Receitas"].sum()
+                                                           ,df_receitas_despesas["Despesas"].sum()]
+    receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="receita"]
+    df_receitas_mensais=receitas_mensais.groupby("Categoria")["Valor"].sum().sort_values(ascending=False)
+    df_receitas_mensais=df_receitas_mensais.reset_index()
+    return df_receitas_despesas,df_receitas_mensais
+
+def gerar_graficos(df_receitas_despesas,df_receitas_mensais) -> None:
+    col1,col2=st.columns(2)
+    with col1:    
         st.subheader("Total de Receitas e Despesas")
-    fig1=px.bar(df_receitas_e_despesas,x="Categoria",y=["Receitas","Despesas"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title="Receitas e Despesas por Categoria")
-    fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Categoria",yaxis_title="Valor",showlegend=True)
-    col1.plotly_chart(fig1)
+        fig1=px.bar(df_receitas_despesas,x="Categoria",y=["Receitas","Despesas"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title="Receitas e Despesas por Categoria")
+        fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Categoria",yaxis_title="Valor",showlegend=True)
+        col1.plotly_chart(fig1)
     with col2:                  
-        receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="receita"]
-        df_receitas_mensais=receitas_mensais.groupby("Categoria")["Valor"].sum().sort_values(ascending=False)
-        df_receitas_mensais=df_receitas_mensais.reset_index()
         st.subheader("Categorias com maiores Receitas")
         if len(df_receitas_mensais)>2:
             df_receitas_mensais=df_receitas_mensais.loc[0:2]
@@ -97,52 +101,45 @@ def graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
         fig2.update_traces(textinfo="percent+label")       
         col2.plotly_chart(fig2)
     st.divider() 
-    df_receitas_e_despesas.loc[len(df_receitas_e_despesas)] = ["TOTAL",df_receitas_e_despesas["Receitas"].sum(),df_receitas_e_despesas["Despesas"].sum()]
-    return {"tabela1": df_receitas_e_despesas,"tabela2": df_receitas_mensais}
 
-def renderizar_template(filtro_mes,dict_tabelas):
-    carregamento_pasta= FileSystemLoader(Path(__file__).parents[1] / "templates")
-    env=Environment(loader=carregamento_pasta)
-    template=env.get_template("template.jinja")
-    agora=datetime.now()
-    variaveis_template={"mês":filtro_mes,
-                        "data": agora.strftime("%Y-%m-%d"),
-                        "hora": agora.strftime("%H:%M:%S")}
-    def formatar_moeda(valor):
-        if isinstance(valor, (int, float)):
-            return f"R${valor:.2f}"
-        return valor
-    for chave,valor in dict_tabelas.items():
-        valor=valor.applymap(lambda x: formatar_moeda(x))
-        variaveis_template[chave]=valor.to_html()
-        template_renderizado=template.render(**variaveis_template)
-    return template_renderizado
-
-def criar_pdf(template,data_referencia):
+def formatar_para_excel(df_receitas_despesas,df_receitas_mensais,data_referencia):
     with tempfile.TemporaryDirectory() as dir_temp:
-        nome_arquivo=f"Relatório mensal - {data_referencia}.pdf"
-        diretorio_temporario= Path(dir_temp) / nome_arquivo
-        config=pdfkit.configuration()
-        pdfkit.from_string(template,diretorio_temporario,configuration=config)
-        
+        nome_arquivo=f"Relatório mensal - {data_referencia}.xlsx"
+        diretorio_arquivo_temporario= Path(dir_temp) / nome_arquivo
 
-        with open(diretorio_temporario, "rb") as f:
+        with pd.ExcelWriter(diretorio_arquivo_temporario) as escritor:
+            df_receitas_despesas.to_excel(escritor,sheet_name="Receitas e Despesas",index=False)
+            df_receitas_mensais.to_excel(escritor,sheet_name="Receitas Mensais",index=False)
+
+        # wb=load_workbook(diretorio_arquivo_temporario)
+        with open(diretorio_arquivo_temporario,"rb") as leitor:
+            arquivo=leitor.read()
             botao_download=st.sidebar.download_button("Clique para fazer o download do arquivo",
-                                                     data=f,
+                                                     data=arquivo,
                                                      file_name=nome_arquivo,
-                                                     mime="application/pdf")
+                                                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    return arquivo
+
+
+# def download_arquivo(arquivo):
+    
+#         with open(diretorio_arquivo_temporario, "rb") as f:
+#             botao_download=st.sidebar.download_button("Clique para fazer o download do arquivo",
+#                                                      data=f,
+#                                                      file_name=nome_arquivo,
+#                                                      mime="application/pdf")
 
 def main():
-    upload_planilha=configurar_upload()
+    upload_planilha=carregar_arquivo()
     if upload_planilha is not None:
-        df,tipo=carregar_dataframe(upload_planilha)
-        dict_colunas,colunas_selecionadas=selecionar_colunas(df)
+        df=carregar_dataframe(upload_planilha)
+        dict_colunas,colunas_selecionadas=selecionar_colunas_dataframe(df)
         if colunas_selecionadas==True:
-            df_formatado=formatar_colunas(df,dict_colunas)
+            df_formatado=formatar_colunas_dataframe(df,dict_colunas)
             df_filtrado,filtro_mes,data_referencia=filtrar_df_formatado(df_formatado)
-            dict_tabelas=graficos(df_filtrado)
-            template_renderizado=renderizar_template(filtro_mes,dict_tabelas)
-            criar_pdf(template_renderizado,data_referencia)
+            df_receitas_despesas,df_receitas_mensais=gerar_dataframes_para_graficos(df_filtrado)
+            gerar_graficos(df_receitas_despesas,df_receitas_mensais)
+            arquivo=formatar_para_excel(df_receitas_despesas,df_receitas_mensais,data_referencia)
     else:
         st.session_state.pop("colunas_selecionadas", None)
 
