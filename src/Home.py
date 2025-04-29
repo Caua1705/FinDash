@@ -5,7 +5,7 @@ from jinja2 import FileSystemLoader,Environment
 from pathlib import Path
 from datetime import datetime
 import tempfile
-import weasyprint
+import pdfkit
 
 def configurar_upload():
     page_config=st.set_page_config(page_title="FinDash",layout="wide",page_icon="💲") 
@@ -115,14 +115,16 @@ def renderizar_template(filtro_mes,dict_tabelas):
     for chave,valor in dict_tabelas.items():
         valor=valor.applymap(lambda x: formatar_moeda(x))
         variaveis_template[chave]=valor.to_html()
-    template_renderizado=template.render(**variaveis_template)
+        template_renderizado=template.render(**variaveis_template)
     return template_renderizado
 
 def criar_pdf(template,data_referencia):
     with tempfile.TemporaryDirectory() as dir_temp:
         nome_arquivo=f"Relatório mensal - {data_referencia}.pdf"
         diretorio_temporario= Path(dir_temp) / nome_arquivo
-        weasyprint.HTML(string=template).write_pdf(diretorio_temporario)
+        config=pdfkit.configuration(wkhtmltopdf="bin/wkhtmltopdf")
+        pdfkit.from_string(template,diretorio_temporario,configuration=config)
+        
 
         with open(diretorio_temporario, "rb") as f:
             botao_download=st.sidebar.download_button("Clique para fazer o download do arquivo",
