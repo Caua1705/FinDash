@@ -122,7 +122,7 @@ def criar_pdf(template,data_referencia):
     with tempfile.TemporaryDirectory() as dir_temp:
         nome_arquivo=f"Relatório mensal - {data_referencia}.pdf"
         diretorio_temporario= Path(dir_temp) / nome_arquivo
-        config=pdfkit.configuration(wkhtmltopdf="bin/wkhtmltopdf")
+        config=pdfkit.configuration()
         pdfkit.from_string(template,diretorio_temporario,configuration=config)
         
 
