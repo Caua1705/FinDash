@@ -121,14 +121,6 @@ def formatar_para_excel(df_receitas_despesas,df_receitas_mensais,data_referencia
     return arquivo
 
 
-# def download_arquivo(arquivo):
-    
-#         with open(diretorio_arquivo_temporario, "rb") as f:
-#             botao_download=st.sidebar.download_button("Clique para fazer o download do arquivo",
-#                                                      data=f,
-#                                                      file_name=nome_arquivo,
-#                                                      mime="application/pdf")
-
 def main():
     upload_planilha=carregar_arquivo()
     if upload_planilha is not None:
