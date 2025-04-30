@@ -47,9 +47,11 @@ def formatar_colunas_dataframe(df,colunas_dataframe) -> pd.DataFrame:
                                       colunas_dataframe["Valor"] : "Valor"
                                       })
     formatacao_letras_tipo=df_formatado["Tipo"].str.lower()
-    coluna_formatada=pd.to_datetime(df_formatado["Data"],dayfirst=True) #Formata a coluna data do DataFrame
+    coluna_formatada=pd.to_datetime(df_formatado["Data"],dayfirst=True,errors="coerce") #Formata a coluna data do DataFrame
+    formatacao_valores=df_formatado["Valor"].replace(",","",".","")
     df_formatado["Tipo"]=formatacao_letras_tipo
     df_formatado["Data"]=coluna_formatada
+    df_formatado["Valor"]=formatacao_valores
     return df_formatado
 
 def filtrar_df_formatado(df_formatado) -> tuple[pd.DataFrame,str]:
