@@ -15,6 +15,7 @@ def carregar_arquivo():
     return upload_planilha
 
 def carregar_dataframe(arquivo) -> pd.DataFrame:
+    
     if arquivo.name.endswith("xlsx"):
         df=pd.read_excel(arquivo)
     if arquivo.name.endswith("csv"):
@@ -193,12 +194,12 @@ def main() -> None:
     if upload_planilha is not None:
         df=carregar_dataframe(upload_planilha)
         dict_colunas=selecionar_colunas_dataframe(df)
-        df_formatado=formatar_colunas_dataframe(df,dict_colunas)
-        df_filtrado,filtro_mes,data_referencia=filtrar_df_formatado_por_ano_mes(df_formatado)
-        df_receitas_despesas,df_receitas_mensais=filtrar_dataframes_para_graficos(df_filtrado)
-        gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes)
-        criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia)
-
+        if st.sidebar.button("Visualizar Dashboard:"):
+            df_formatado=formatar_colunas_dataframe(df,dict_colunas)
+            df_filtrado,filtro_mes,data_referencia=filtrar_df_formatado_por_ano_mes(df_formatado)
+            df_receitas_despesas,df_receitas_mensais=filtrar_dataframes_para_graficos(df_filtrado)
+            gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes)
+            criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia)
 
 if __name__ == "__main__":
     main()
