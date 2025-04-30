@@ -9,7 +9,7 @@ from openpyxl.chart import BarChart, Reference
 
 def carregar_arquivo():
     st.set_page_config(page_title="FinDash",layout="wide",page_icon="💲") 
-    st.title("Planilha Financeira:")
+    st.title("Dashboard Financeiro:")
     st.write("Escolha um arquivo do tipo CSV ou XLSX para carregar a planilha:")
     upload_planilha=st.file_uploader("Selecione o arquivo:",accept_multiple_files=False,type=["xlsx","csv"])
     return upload_planilha
