@@ -48,7 +48,8 @@ def formatar_colunas_dataframe(df,colunas_dataframe) -> pd.DataFrame:
                                       })
     formatacao_letras_tipo=df_formatado["Tipo"].str.lower()
     coluna_formatada=pd.to_datetime(df_formatado["Data"],dayfirst=True,errors="coerce") #Formata a coluna data do DataFrame
-    formatacao_valores=df_formatado["Valor"].replace(",","",".","")
+    formatacao_valores=df_formatado["Valor"].str.replace(",","")
+    formatacao_valores=df_formatado["Valor"].str.replace(".","")
     df_formatado["Tipo"]=formatacao_letras_tipo
     df_formatado["Data"]=coluna_formatada
     df_formatado["Valor"]=formatacao_valores
