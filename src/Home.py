@@ -90,13 +90,13 @@ def gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) -> None:
     with col2:               
         st.subheader("Categorias com maiores Receitas")
         if len(df_receitas_mensais)>2:
-            df_receitas_mensais=df_receitas_mensais.loc[0:4]
+            df_receitas_mensais=df_receitas_mensais.loc[0:3]
         fig2=px.pie(df_receitas_mensais,names="Centro de Custo",values="Valor",title=f"Distribuição das maiores Receitas em {filtro_mes}",color="Centro de Custo")
         fig2.update_traces(textinfo="percent+label")       
         col2.plotly_chart(fig2)
     st.divider() 
 
-def formatar_arquivo_excel(sheet):
+def formatar_arquivo_excel(sheet) -> None:
     if sheet.max_column<3:
         tipo="incompleto"
     else:
@@ -166,7 +166,7 @@ def formatar_arquivo_excel(sheet):
     grafico.y_axis.majorGridlines = None
     sheet.add_chart(grafico,"G1")
 
-def criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia):
+def criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia) -> None:
     with tempfile.TemporaryDirectory() as dir_temp:
         nome_arquivo=f"Relatório mensal - {data_referencia}.xlsx"
         diretorio_arquivo_temporario= Path(dir_temp) / nome_arquivo
@@ -188,7 +188,7 @@ def criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referenc
                                         file_name=nome_arquivo,
                                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     
-def main():
+def main() -> None:
     upload_planilha=carregar_arquivo()
     if upload_planilha is not None:
         df=carregar_dataframe(upload_planilha)
