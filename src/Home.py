@@ -90,7 +90,7 @@ def gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) -> None:
     with col2:               
         st.subheader("Categorias com maiores Receitas")
         if len(df_receitas_mensais)>2:
-            df_receitas_mensais=df_receitas_mensais.loc[0:3]
+            df_receitas_mensais=df_receitas_mensais.loc[0:2]
         fig2=px.pie(df_receitas_mensais,names="Centro de Custo",values="Valor",title=f"Distribuição das maiores Receitas em {filtro_mes}",color="Centro de Custo")
         fig2.update_traces(textinfo="percent+label")       
         col2.plotly_chart(fig2)
