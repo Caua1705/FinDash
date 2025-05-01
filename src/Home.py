@@ -15,7 +15,6 @@ def carregar_arquivo():
     return upload_planilha
 
 def carregar_dataframe(arquivo) -> pd.DataFrame:
-    
     if arquivo.name.endswith("xlsx"):
         df=pd.read_excel(arquivo)
     if arquivo.name.endswith("csv"):
@@ -23,13 +22,14 @@ def carregar_dataframe(arquivo) -> pd.DataFrame:
     return df
 
 def selecionar_colunas_dataframe(df) -> dict[str,pd.DataFrame]:
-    st.write("### Seleção de Colunas:")
-    coluna_data=st.selectbox("Selecione a coluna Data(dd/mm/yyyy)",list(df.columns),help="Coluna onde está a data da transação")
-    coluna_centro_custo=st.selectbox("Selecione a coluna Centro de Custo",[a for a in list(df.columns) if a != coluna_data],help="Coluna onde está o centro de custo da transação")
-    coluna_valor=st.selectbox("Selecione a coluna Valor",[a for a in list(df.columns) if a != coluna_data and a != coluna_centro_custo],help="Coluna onde está o valor da transação")
-    dict_colunas={"Data":coluna_data,
-                  "Centro de Custo":coluna_centro_custo, 
-                  "Valor":coluna_valor}
+    col1,col2,col3=st.columns(3)
+    with col1:
+        coluna_data=st.selectbox("Selecione a coluna Data(dd/mm/yyyy)",list(df.columns),help="Coluna onde está a data da transação")
+    with col2:
+        coluna_centro_custo=st.selectbox("Selecione a coluna Centro de Custo",[a for a in list(df.columns) if a != coluna_data],help="Coluna onde está o centro de custo da transação")
+    with col3:
+        coluna_valor=st.selectbox("Selecione a coluna Valor",[a for a in list(df.columns) if a != coluna_data and a != coluna_centro_custo],help="Coluna onde está o valor da transação")
+    dict_colunas={"Data":coluna_data,"Centro de Custo":coluna_centro_custo,"Valor":coluna_valor}
     return dict_colunas
         
 def formatar_colunas_dataframe(df,colunas_dataframe) -> pd.DataFrame:
