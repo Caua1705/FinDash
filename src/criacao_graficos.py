@@ -2,13 +2,19 @@ import plotly.express as px
 import streamlit as st
 import pandas as pd
 
-def filtrar_dataframes_para_graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
+def filtrar_dataframes_para_graficos(df_filtrado,filtro_mes) -> tuple[pd.DataFrame,pd.DataFrame]:
+    if (df_filtrado["Tipo"] =="Receitas").all(): 
+        st.error(f"O mês de {filtro_mes} não possui despesas.")
+        st.stop()
+    if (df_filtrado["Tipo"]=="Despesas").all(): 
+        st.error(f"O mês de {filtro_mes} não possui receitas.")
+        st.stop()
     df_receitas_despesas=df_filtrado.pivot_table(index="Centro de Custo",
-                                                       columns="Tipo",
-                                                       values="Valor",
-                                                       aggfunc="sum",
-                                                       fill_value=0,
-                                                       ).reset_index()
+                                                    columns="Tipo",
+                                                    values="Valor",
+                                                    aggfunc="sum",
+                                                    fill_value=0,
+                                                    ).reset_index()
     df_receitas_despesas=df_receitas_despesas[["Centro de Custo","Receitas","Despesas"]]
     df_receitas_despesas=df_receitas_despesas.sort_values(by="Receitas",ascending=False)
     df_receitas_despesas.loc[len(df_receitas_despesas)] = ["TOTAL",df_receitas_despesas["Receitas"].sum(),df_receitas_despesas["Despesas"].sum()]

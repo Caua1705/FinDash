@@ -44,10 +44,10 @@ def formatar_colunas_dataframe(df,colunas_dataframe) -> pd.DataFrame:
         st.stop()
     try:
         df_formatado["Tipo"]=df_formatado["Valor"].apply(lambda x: "Receitas" if x > 0 else "Despesas")
-        if df_formatado["Valor"].apply(lambda x: x > 0 ).all():
+        if (df_formatado["Valor"] > 0).all():
             st.error(f"Erro na coluna valor. Todos os valores são positivos")
             st.stop()
-        if df_formatado["Valor"].apply(lambda x: x < 0 ).all():
+        if (df_formatado["Valor"] < 0).all():
             st.error(f"Erro na coluna valor. Todos os valores são negativos")
             st.stop()
     except TypeError:
