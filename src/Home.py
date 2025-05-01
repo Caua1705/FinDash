@@ -104,6 +104,7 @@ def gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) -> None:
         fig2=px.pie(df_receitas_mensais,names="Centro de Custo",values="Valor",title=f"Distribuição das maiores Receitas em {filtro_mes}",color="Centro de Custo")
         fig2.update_traces(textinfo="percent+label")       
         col2.plotly_chart(fig2)
+    st.divider()
 
 def formatar_arquivo_excel(sheet) -> None:
     if sheet.max_column<3:
@@ -192,12 +193,14 @@ def criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referenc
 
         with open(diretorio_arquivo_temporario,"rb") as leitor:
             arquivo=leitor.read()
-            st.markdown("### 📄 Exportar relatório em Excel")
+            st.markdown("### 📄 Exportação do relatório")
+            st.markdown("Você pode baixar o relatório financeiro mensal em formato Excel.")
             st.download_button(" 📥 Clique para fazer o download",
                                         data=arquivo,
                                         file_name=nome_arquivo,
                                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             st.divider()
+            st.caption("Desenvolvido por Cauã de Carvalho Oliveira Peixoto - Todos os direitos reservados © 2025")
     
 def main() -> None:
     upload_planilha=carregar_arquivo()
