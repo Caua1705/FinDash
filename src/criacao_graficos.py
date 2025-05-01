@@ -12,7 +12,7 @@ def filtrar_dataframes_para_graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataF
     df_receitas_despesas=df_receitas_despesas[["Centro de Custo","Receitas","Despesas"]]
     df_receitas_despesas=df_receitas_despesas.sort_values(by="Receitas",ascending=False)
     df_receitas_despesas.loc[len(df_receitas_despesas)] = ["TOTAL",df_receitas_despesas["Receitas"].sum(),df_receitas_despesas["Despesas"].sum()]
-    receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="Receita"]
+    receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="Receitas"]
     df_receitas_mensais=receitas_mensais.groupby("Centro de Custo")["Valor"].sum().sort_values(ascending=False).reset_index()
     df_receitas_mensais.loc[len(df_receitas_mensais)] = ["TOTAL",df_receitas_mensais["Valor"].sum()]
     return df_receitas_despesas,df_receitas_mensais
