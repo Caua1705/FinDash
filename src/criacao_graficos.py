@@ -4,13 +4,10 @@ import pandas as pd
 
 def filtrar_dataframes_para_graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
     df_receitas_despesas=df_filtrado.pivot_table(index="Centro de Custo",
-                                                       columns="Tipo",
-                                                       values="Valor",
+                                                       values=["Receitas","Despesas"],
                                                        aggfunc="sum",
                                                        fill_value=0,
-                                                       )
-    df_receitas_despesas=df_receitas_despesas.rename(columns={"receita":"Receitas",
-                                                                "despesa":"Despesas"}).reset_index()
+                                                       ).reset_index()
     df_receitas_despesas=df_receitas_despesas[["Centro de Custo","Receitas","Despesas"]]
     df_receitas_despesas=df_receitas_despesas.sort_values(by="Receitas",ascending=False)
     df_receitas_despesas.loc[len(df_receitas_despesas)] = ["TOTAL",df_receitas_despesas["Receitas"].sum(),df_receitas_despesas["Despesas"].sum()]
