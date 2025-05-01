@@ -23,11 +23,10 @@ def carregar_dataframe(arquivo) -> pd.DataFrame:
     return df
 
 def selecionar_colunas_dataframe(df) -> dict[str,pd.DataFrame]:
-    columns=st.sidebar
-    columns.write("### Seleção de Colunas:")
-    coluna_data=columns.selectbox("Selecione a coluna Data(dd/mm/yyyy)",list(df.columns),help="Coluna onde está a data da transação")
-    coluna_centro_custo=columns.selectbox("Selecione a coluna Centro de Custo",[a for a in list(df.columns) if a != coluna_data],help="Coluna onde está o centro de custo da transação")
-    coluna_valor=columns.selectbox("Selecione a coluna Valor",[a for a in list(df.columns) if a != coluna_data and a != coluna_centro_custo],help="Coluna onde está o valor da transação")
+    st.write("### Seleção de Colunas:")
+    coluna_data=st.selectbox("Selecione a coluna Data(dd/mm/yyyy)",list(df.columns),help="Coluna onde está a data da transação")
+    coluna_centro_custo=st.selectbox("Selecione a coluna Centro de Custo",[a for a in list(df.columns) if a != coluna_data],help="Coluna onde está o centro de custo da transação")
+    coluna_valor=st.selectbox("Selecione a coluna Valor",[a for a in list(df.columns) if a != coluna_data and a != coluna_centro_custo],help="Coluna onde está o valor da transação")
     dict_colunas={"Data":coluna_data,
                   "Centro de Custo":coluna_centro_custo, 
                   "Valor":coluna_valor}
@@ -39,12 +38,22 @@ def formatar_colunas_dataframe(df,colunas_dataframe) -> pd.DataFrame:
                                       colunas_dataframe["Centro de Custo"] :"Centro de Custo",
                                       colunas_dataframe["Valor"] : "Valor"
                                       })
-    df_formatado=df_formatado[["Data","Centro de Custo","Valor"]]
-    valores_nulos=df_formatado["Centro de Custo"].fillna("Desconhecido")
-    coluna_formatada=pd.to_datetime(df_formatado["Data"],dayfirst=True,errors="coerce") 
-    df_formatado["Tipo"]=df_formatado["Valor"].apply(lambda x: "receita" if x > 0 else "despesa")
+    df_formatado=df_formatado[["Data","Centro de Custo","Valor"]]   
+    df_formatado["Centro de Custo"]=df_formatado["Centro de Custo"].fillna("Desconhecido")
+    try:
+        coluna_formatada=pd.to_datetime(df_formatado["Data"],dayfirst=True) 
+    except ValueError:
+           st.error(f"Erro na coluna Data. Revise os dados da tabela")
+           st.stop()
+    if df_formatado["Centro de Custo"].apply(lambda x: not isinstance(x,str)).any():
+        st.error(f"Erro na coluna Centro de Custo. Revise os dados da tabela")
+        st.stop()
+    try:
+        df_formatado["Tipo"]=df_formatado["Valor"].apply(lambda x: "receita" if x > 0 else "despesa")
+    except TypeError:
+        st.error(f"Erro na coluna Valor(R$). Revise os dados da tabela")
+        st.stop()
     df_formatado["Data"]=coluna_formatada
-    df_formatado["Centro de Custo"]=valores_nulos
     df_formatado["Valor"]=df_formatado["Valor"].apply(abs)
     return df_formatado
 
@@ -184,20 +193,19 @@ def criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referenc
 
         with open(diretorio_arquivo_temporario,"rb") as leitor:
             arquivo=leitor.read()
-            st.sidebar.download_button("Clique para fazer o download",
+            st.download_button("Clique para fazer o download",
                                         data=arquivo,
                                         file_name=nome_arquivo,
                                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     
 def main() -> None:
-
     upload_planilha=carregar_arquivo()
     if upload_planilha is not None:
         df=carregar_dataframe(upload_planilha)
         dict_colunas=selecionar_colunas_dataframe(df)
         if "mostrar_dashboard" not in st.session_state:
             st.session_state["mostrar_dashboard"]=False
-        if st.sidebar.button("Visualizar Dashboard:"):
+        if st.button("Visualizar Dashboard:"):
             st.session_state["mostrar_dashboard"]=True
         if st.session_state["mostrar_dashboard"]==True:
                 df_formatado=formatar_colunas_dataframe(df,dict_colunas)
@@ -207,6 +215,6 @@ def main() -> None:
                 criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia)
     else:
         st.session_state.pop("mostrar_dashboard",None)
-        
+
 if __name__ == "__main__":
     main()
