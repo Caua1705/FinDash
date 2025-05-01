@@ -4,7 +4,8 @@ import pandas as pd
 
 def filtrar_dataframes_para_graficos(df_filtrado) -> tuple[pd.DataFrame,pd.DataFrame]:
     df_receitas_despesas=df_filtrado.pivot_table(index="Centro de Custo",
-                                                       values=["Receitas","Despesas"],
+                                                       columns="Tipo",
+                                                       values="Valor",
                                                        aggfunc="sum",
                                                        fill_value=0,
                                                        ).reset_index()
