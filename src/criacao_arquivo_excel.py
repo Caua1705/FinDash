@@ -95,7 +95,6 @@ def criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referenc
             arquivo=leitor.read()
             st.markdown("### 📄 Exportação do relatório")
             st.markdown("Você pode baixar o relatório financeiro mensal em formato Excel.")
-            st.success("Relatório pronto para download!")
             st.download_button(" 📥 Clique para fazer o download",
                                         data=arquivo,
                                         file_name=nome_arquivo,
