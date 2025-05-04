@@ -18,7 +18,7 @@ def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
         if len(df_filtrado_clientes)>5:
             df_filtrado_clientes=df_filtrado_clientes.iloc[:5]
         st.subheader("Distribuição de Receitas por Cliente")
-        fig1=px.bar(df_filtrado_clientes,x="Cliente / Fornecedor",y="Receitas",title="Participação dos principais clientes nas receitas",color="Cliente / Fornecedor",orientation="h")
+        fig1=px.bar(df_filtrado_clientes,x="Cliente / Fornecedor",y="Receitas",title="Participação dos principais clientes nas receitas",color="Cliente / Fornecedor",barmode="group")
         fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Clientes",yaxis_title="Receitas",showlegend=True)
         col1.plotly_chart(fig1)
     with col2:
@@ -26,7 +26,7 @@ def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
         if len(df_filtrado_fornecedores)>5:
             df_filtrado_fornecedores=df_filtrado_fornecedores.iloc[:5]
         st.subheader("Distribuição de Despesas por Fornecedor")
-        fig1=px.bar(df_filtrado_fornecedores,x="Cliente / Fornecedor",y="Despesas",title="Participação dos principais fornecedores nas despesas",color="Cliente / Fornecedor")
+        fig1=px.bar(df_filtrado_fornecedores,x="Cliente / Fornecedor",y="Despesas",title="Participação dos principais fornecedores nas despesas",color="Cliente / Fornecedor",barmode="group")
         fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Fornecedores",yaxis_title="Despesas",showlegend=True)
         col2.plotly_chart(fig1)
         
