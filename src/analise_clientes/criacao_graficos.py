@@ -15,8 +15,8 @@ def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
     col1,col2=st.columns(2)
     with col1:
         df_filtrado_clientes=df_filtrado_clientes.sort_values(by="Receitas",ascending=False)
-        if len(df_filtrado_clientes)>5:
-            df_filtrado_clientes=df_filtrado_clientes.iloc[:5]
+        if len(df_filtrado_clientes)>10:
+            df_filtrado_clientes=df_filtrado_clientes.iloc[:10]
         st.subheader("Distribuição de Receitas por Cliente")
         fig1=px.bar(df_filtrado_clientes,x="Receitas",y="Cliente / Fornecedor",title="Participação dos principais clientes nas receitas",color="Cliente / Fornecedor",orientation="h")
         fig1.update_layout(xaxis_title="Receitas",yaxis_title="Clientes",showlegend=False,height=370)
