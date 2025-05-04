@@ -44,7 +44,7 @@ def gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) -> None:
     with col1:    
         st.subheader("Total de Receitas e Despesas")
         fig1=px.bar(df_receitas_despesas,x="Centro de Custo / Receita",y=["Receitas","Despesas"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title=f"Receitas e Despesas por Centro de Custo / Receita em {filtro_mes}")
-        fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Categoria",yaxis_title="Valor",showlegend=True)
+        fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Centro de Custo / Receita",yaxis_title="Valor",showlegend=True)
         col1.plotly_chart(fig1)
     with col2:               
         st.subheader("Principais Centros de Receita")
