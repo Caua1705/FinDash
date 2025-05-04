@@ -26,5 +26,5 @@ def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
             df_filtrado_fornecedores=df_filtrado_fornecedores.iloc[:5]
         st.subheader("Distribuição de Receitas por Fornecedor")
         fig1=px.bar(df_filtrado_fornecedores,x="Cliente / Fornecedor",y="Despesas",title="Participação dos principais fornecedores nas despesas",color="Cliente / Fornecedor")
-        col1.plotly_chart(fig1)
+        col2.plotly_chart(fig1)
         
