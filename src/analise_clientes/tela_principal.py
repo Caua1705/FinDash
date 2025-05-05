@@ -16,7 +16,7 @@ def filtrar_dataframes_para_graficos(df_filtrado_para_grafico):
     return df_gerado
 
 def criar_metricas(df_filtrado_clientes,df_filtrado_fornecedores,df_clientes):
-    col1,col2,col3,col4=st.columns([1.2,1.2,1.2,0.7])
+    col1,col2,col3,col4=st.columns([1.2,1.2,1.2,1.9])
     #Top 1º Cliente:
     with col1:
       df_clientes=df_clientes.loc[df_clientes["Cliente / Fornecedor"]!="Desconhecido","Cliente / Fornecedor"]
