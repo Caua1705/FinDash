@@ -19,7 +19,6 @@ def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
         fig1=px.bar(df_filtrado_clientes,x="Receitas",y="Cliente / Fornecedor",title="Participação dos principais clientes nas receitas",color="Cliente / Fornecedor",orientation="h")
         fig1.update_layout(xaxis_title="Receitas",yaxis_title="Clientes",showlegend=False,height=370,bargap=0.3)
         st.plotly_chart(fig1,use_container_width=True)
-        st.markdown("")
         df_filtrado_fornecedores=df_filtrado_fornecedores.sort_values(by="Despesas",ascending=False)
         if len(df_filtrado_fornecedores)>5:
             df_filtrado_fornecedores=df_filtrado_fornecedores.iloc[:10]

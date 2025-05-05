@@ -10,10 +10,8 @@ def main() -> None:
         df_filtrado=df_formatado.loc[(df_formatado["Data"].dt.date >= data_inicial ) & (df_formatado["Data"].dt.date <= data_final )]
         df_clientes=df_filtrado[df_filtrado["Tipo"]=="Receitas"]
         df_fornecedores=df_filtrado[df_filtrado["Tipo"]=="Despesas"]
-        try:
-            df_filtrado_clientes=filtrar_dataframes_para_graficos(df_clientes)
-        except KeyError:
-            st.warning("Não há valores para essa data")
+        df_filtrado_clientes=filtrar_dataframes_para_graficos(df_clientes)
+        st.warning("Não há valores para essa data")
         df_filtrado_fornecedores=filtrar_dataframes_para_graficos(df_fornecedores)
         gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores)
 
