@@ -47,10 +47,10 @@ def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
         st.plotly_chart(fig2,use_container_width=True)
 
 def transacoes_detalhadas(df_filtrado):
-    df_filtrado["Cliente / Fornecedor"]=df_filtrado.loc[df_filtrado["Cliente / Fornecedor"]!="Desconhecido",
-                                                        "Cliente / Fornecedor"]
-    valores_pesquisa= df_filtrado["Cliente / Fornecedor"].unique()
-    st.write("### Pesquisa:")
-    cliente_fornecedor_escolhido=st.selectbox("Escolha entre cliente ou fornecedor:",valores_pesquisa)
-    # st.write(df_filtrado.loc[cliente_fornecedor_escolhido])
+    valores_pesquisa=df_filtrado.loc[df_filtrado["Cliente / Fornecedor"]!="Desconhecido",
+                                                        "Cliente / Fornecedor"].unique()
+    st.write("### Filtrar Transações por Cliente ou Fornecedor:")
+    valor_escolhido=st.selectbox("Selecione um Cliente ou Fornecedor",valores_pesquisa)
+    df_valor_escolhido=df_filtrado.loc[df_filtrado["Cliente / Fornecedor"]==valor_escolhido]
+    st.write(df_valor_escolhido)
     
