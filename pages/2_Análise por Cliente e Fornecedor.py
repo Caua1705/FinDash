@@ -5,12 +5,12 @@ def main() -> None:
     if "df_formatado" in st.session_state:
         df_formatado=st.session_state.df_formatado
         st.title("Análise por Cliente e Fornecedor")
+        data_inicial=st.sidebar.date_input("Data Inicial")
+        data_final=st.sidebar.date_input("Data Final")
         try:
-            data_inicial=st.sidebar.date_input("Data Inicial")
-            data_final=st.sidebar.date_input("Data Final")
+            df_filtrado=df_formatado.loc[(df_formatado["Data"].dt.date >= data_inicial ) & (df_formatado["Data"].dt.date <= data_final )]
         except KeyError:
-            st.warning("Não há valores para essa data.")
-        df_filtrado=df_formatado.loc[(df_formatado["Data"].dt.date >= data_inicial ) & (df_formatado["Data"].dt.date <= data_final )]
+            st.warning("Não há valores para essa data")
         df_clientes=df_filtrado[df_filtrado["Tipo"]=="Receitas"]
         df_fornecedores=df_filtrado[df_filtrado["Tipo"]=="Despesas"]
         df_filtrado_clientes=filtrar_dataframes_para_graficos(df_clientes)
