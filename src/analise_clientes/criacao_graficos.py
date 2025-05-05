@@ -12,7 +12,7 @@ def filtrar_dataframes_para_graficos(df_filtrado_para_grafico):
     return df_gerado
 
 def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
-    col1,col2=st.tabs(["Visão Geral", "Detalhes por Cliente/Fornecedor"])
+    col1,col2=st.columns(2)
     with col1:
         df_filtrado_clientes=df_filtrado_clientes.sort_values(by="Receitas",ascending=False)
         if len(df_filtrado_clientes)>10:
