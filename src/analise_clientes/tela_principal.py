@@ -23,14 +23,13 @@ def criar_metricas(df_filtrado_clientes,df_filtrado_fornecedores,df_clientes):
       clientes_com_mais_transacoes=df_clientes.value_counts().reset_index()
       st.metric("Cliente com mais transações",clientes_com_mais_transacoes.iloc[0,0],f"{clientes_com_mais_transacoes.iloc[0,1]} transações")
     with col2:
-      st.metric("Top 1 Cliente",df_filtrado_clientes.iloc[0,0], f"R$ {df_filtrado_clientes.iloc[0,1]:.2f}")
+      st.metric("Top 1 Cliente","oi", f"R$ {df_filtrado_clientes.iloc[0,1]:.2f}")
     with col3:
       ticket_medio_cliente=df_filtrado_clientes["Receitas"].sum() / len(df_filtrado_clientes)
       st.metric("Ticket Médio por Cliente",f"R$ {ticket_medio_cliente:.2f}")
     with col4:
-      st.metric("Principal Fornecedor",df_filtrado_fornecedores.iloc[0,0], f"R$ {df_filtrado_fornecedores.iloc[0,1]:.2f}")
+      st.metric("Principal Fornecedor","oi", f"R$ {df_filtrado_fornecedores.iloc[0,1]:.2f}")
     st.divider()
-
 
 def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
         if len(df_filtrado_clientes)>10:
@@ -47,3 +46,7 @@ def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
         fig2.update_layout(xaxis_title="Despesas",yaxis_title="Fornecedores",showlegend=False,height=370,bargap=0.3)
         st.plotly_chart(fig2,use_container_width=True)
         st.write(df_filtrado_fornecedores)
+
+def transacoes_detalhadas():
+    pass
+    
