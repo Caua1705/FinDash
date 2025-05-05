@@ -1,5 +1,5 @@
 import streamlit as st
-from src.analise_clientes.tela_principal import filtrar_dataframes_para_graficos,gerar_graficos,criar_metricas
+from src.analise_clientes.tela_principal import filtrar_dataframes_para_graficos,gerar_graficos,criar_metricas,transacoes_detalhadas
 
 def main() -> None:
     if "df_formatado" in st.session_state:
@@ -19,6 +19,7 @@ def main() -> None:
         
         gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores)
 
+        transacoes_detalhadas(df_filtrado)
 
     else:
         st.warning("Faça o upload do arquivo!")
