@@ -19,21 +19,16 @@ def criar_metricas(df_filtrado_clientes,df_filtrado_fornecedores,df_clientes):
     col1,col2,col3,col4=st.columns(4)
     #Top 1º Cliente:
     with col1:
-      st.write("### Top 1 Cliente")
-      st.write(f"{df_filtrado_clientes.iloc[0,0]} - R$ {df_filtrado_clientes.iloc[0,1]:.2f}")
+      st.metric("Top 1 Cliente",df_filtrado_clientes.iloc[0,0], f"R$ {df_filtrado_clientes.iloc[0,1]:.2f}")
     with col2:
-      st.write("### Ticket Médio por Cliente")
       ticket_medio_cliente=df_filtrado_clientes["Receitas"].sum() / len(df_filtrado_clientes)
-      st.write(f"R$ {ticket_medio_cliente:.2f}")
+      st.metric("Ticket Médio por Cliente",f"R$ {ticket_medio_cliente}")
     with col3:
-      st.write("### Principal Fornecedor")
-      st.write(f"{df_filtrado_fornecedores.iloc[0,0]} - R$ {df_filtrado_fornecedores.iloc[0,1]:.2f}")
+      st.metric("Principal Fornecedor",df_filtrado_fornecedores.iloc[0,0], f"R$ {df_filtrado_fornecedores.iloc[0,1]:.2f}")
     with col4:
-      st.write("### Cliente com mais transações:")
-      df_clientes=df_clientes.loc[df_clientes["Cliente / Fornecedor"]!="Desconhecido",
-                                  "Cliente / Fornecedor"]
+      df_clientes=df_clientes.loc[df_clientes["Cliente / Fornecedor"]!="Desconhecido","Cliente / Fornecedor"]
       clientes_com_mais_transacoes=df_clientes.value_counts().reset_index()
-      st.write(f"{clientes_com_mais_transacoes.iloc[0,0]} - {clientes_com_mais_transacoes.iloc[0,1]}")
+      st.metric("Cliente com mais transações",clientes_com_mais_transacoes.iloc[0,0],f"{clientes_com_mais_transacoes.iloc[0,1]} transações")
     st.divider()
 
 
