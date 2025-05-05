@@ -9,10 +9,9 @@ def filtrar_dataframes_para_graficos(df_filtrado_para_grafico):
                                         index="Cliente / Fornecedor",
                                         aggfunc="sum").reset_index()
     df_gerado=df_gerado.loc[df_gerado["Cliente / Fornecedor"]!="Desconhecido"]
-    if (coluna for coluna in df_gerado.columns == "Receitas"):
-         df_gerado=df_gerado.sort_values(by="Receitas",ascending=False)
-    else:
-        df_gerado=df_gerado.sort_values(by="Despesas",ascending=False)
+    # if (coluna for coluna in df_gerado.columns == "Receitas"):
+        #  df_gerado=df_gerado.sort_values(by="Receitas",ascending=False)
+    st.write(df_gerado.columns)
     return df_gerado
 
 def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
