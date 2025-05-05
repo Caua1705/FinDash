@@ -45,8 +45,8 @@ def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
         fig2=px.bar(df_filtrado_fornecedores,x="Despesas",y="Cliente / Fornecedor",title="Participação dos principais fornecedores nas despesas",color="Cliente / Fornecedor",orientation="h")
         fig2.update_layout(xaxis_title="Despesas",yaxis_title="Fornecedores",showlegend=False,height=370,bargap=0.3)
         st.plotly_chart(fig2,use_container_width=True)
-        st.write(df_filtrado_fornecedores)
 
-def transacoes_detalhadas():
-    pass
+def transacoes_detalhadas(df_filtrado):
+    valor_pesquisa=st.text_input("Pesquisar Cliente/Fornecedor",df_filtrado["Cliente / Fornecedor"])
+    st.write(valor_pesquisa)
     
