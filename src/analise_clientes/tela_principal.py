@@ -48,7 +48,7 @@ def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
 
 def transacoes_detalhadas(df_filtrado):
     st.write("Pesquisa:")
-    valores_pesquisa=df_filtrado["Cliente / Fornecedor"]!="Desconhecido".unique()
-    valor_pesquisa=st.selectbox("Escolha entre cliente ou fornecedor:",valores_pesquisa)
+    df_filtrado["Cliente / Fornecedor"]=df_filtrado["Cliente / Fornecedor"]!="Desconhecido".unique()
+    valor_pesquisa=st.selectbox("Escolha entre cliente ou fornecedor:",list(df_filtrado["Cliente / Fornecedor"]))
     st.write(valor_pesquisa)
     
