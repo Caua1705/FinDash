@@ -16,7 +16,7 @@ def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
         if len(df_filtrado_clientes)>10:
             df_filtrado_clientes=df_filtrado_clientes.iloc[:10]
         st.markdown("### Principais Clientes:")
-        fig1=px.bar(df_filtrado_clientes,x="Receitas",y="Cliente / Fornecedor",title="Participação dos principais clientes nas receitas",color="Cliente / Fornecedor",orientation="h")
+        fig1=px.bar(df_filtrado_clientes,x="Receitas",y="Cliente / Fornecedor",title="Participação dos principais clientes nas receitas",color="Cliente / Fornecedor",orientation="h",use_container_width=True)
         fig1.update_layout(xaxis_title="Receitas",yaxis_title="Clientes",showlegend=False,height=370,bargap=0.3)
         st.plotly_chart(fig1)
         st.markdown("")
@@ -24,7 +24,7 @@ def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
         if len(df_filtrado_fornecedores)>5:
             df_filtrado_fornecedores=df_filtrado_fornecedores.iloc[:10]
         st.markdown("### Principais Fornecedores:")
-        fig1=px.bar(df_filtrado_fornecedores,x="Despesas",y="Cliente / Fornecedor",title="Participação dos principais fornecedores nas despesas",color="Cliente / Fornecedor",orientation="h")
+        fig1=px.bar(df_filtrado_fornecedores,x="Despesas",y="Cliente / Fornecedor",title="Participação dos principais fornecedores nas despesas",color="Cliente / Fornecedor",orientation="h",use_container_width=True)
         fig1.update_layout(xaxis_title="Despesas",yaxis_title="Fornecedores",showlegend=False,height=370,bargap=0.3)
         st.plotly_chart(fig1)
         
