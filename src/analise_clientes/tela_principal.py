@@ -9,10 +9,33 @@ def filtrar_dataframes_para_graficos(df_filtrado_para_grafico):
                                         index="Cliente / Fornecedor",
                                         aggfunc="sum").reset_index()
     df_gerado=df_gerado.loc[df_gerado["Cliente / Fornecedor"]!="Desconhecido"]
-    # if (coluna for coluna in df_gerado.columns == "Receitas"):
-        #  df_gerado=df_gerado.sort_values(by="Receitas",ascending=False)
-    st.write(df_gerado.columns)
+    if "Receitas" in df_gerado.columns:
+        df_gerado=df_gerado.sort_values(by="Receitas",ascending=False)
+    else:
+        df_gerado=df_gerado.sort_values(by="Despesas",ascending=False)
     return df_gerado
+
+def criar_metricas(df_filtrado_clientes,df_filtrado_fornecedores,df_clientes):
+    col1,col2,col3,col4=st.columns(4)
+    #Top 1º Cliente:
+    with col1:
+      st.write("### Top 1 Cliente")
+      st.write(f"{df_filtrado_clientes.iloc[0,0]} - R$ {df_filtrado_clientes.iloc[0,1]:.2f}")
+    with col2:
+      st.write("### Ticket Médio por Cliente")
+      ticket_medio_cliente=df_filtrado_clientes["Receitas"].sum() / len(df_filtrado_clientes)
+      st.write(f"R$ {ticket_medio_cliente:.2f}")
+    with col3:
+      st.write("### Principal Fornecedor")
+      st.write(f"{df_filtrado_fornecedores.iloc[0,0]} - R$ {df_filtrado_fornecedores.iloc[0,1]:.2f}")
+    with col4:
+      st.write("### Cliente com mais transações:")
+      df_clientes=df_clientes.loc[df_clientes["Cliente / Fornecedor"]!="Desconhecido",
+                                  "Cliente / Fornecedor"]
+      clientes_com_mais_transacoes=df_clientes.value_counts().reset_index()
+      st.write(f"{clientes_com_mais_transacoes.iloc[0,0]} - {clientes_com_mais_transacoes.iloc[0,1]}")
+    st.divider()
+
 
 def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
         if len(df_filtrado_clientes)>10:
@@ -21,15 +44,11 @@ def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
         fig1=px.bar(df_filtrado_clientes,x="Receitas",y="Cliente / Fornecedor",title="Participação dos principais clientes nas receitas",color="Cliente / Fornecedor",orientation="h")
         fig1.update_layout(xaxis_title="Receitas",yaxis_title="Clientes",showlegend=False,height=370,bargap=0.3)
         st.plotly_chart(fig1,use_container_width=True)
-        st.write(df_filtrado_clientes)
 
-        if len(df_filtrado_fornecedores)>5:
+        if len(df_filtrado_fornecedores)>10:
             df_filtrado_fornecedores=df_filtrado_fornecedores.iloc[:10]
         st.markdown("### Principais Fornecedores:")
         fig2=px.bar(df_filtrado_fornecedores,x="Despesas",y="Cliente / Fornecedor",title="Participação dos principais fornecedores nas despesas",color="Cliente / Fornecedor",orientation="h")
         fig2.update_layout(xaxis_title="Despesas",yaxis_title="Fornecedores",showlegend=False,height=370,bargap=0.3)
         st.plotly_chart(fig2,use_container_width=True)
         st.write(df_filtrado_fornecedores)
-
-def criar_metricas():
-      pass
