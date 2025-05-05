@@ -26,7 +26,7 @@ def criar_metricas(df_filtrado_clientes,df_filtrado_fornecedores,df_clientes):
       st.metric("Top 1 Cliente",df_filtrado_clientes.iloc[0,0], f"R$ {df_filtrado_clientes.iloc[0,1]:.2f}")
     with col3:
       ticket_medio_cliente=df_filtrado_clientes["Receitas"].sum() / len(df_filtrado_clientes)
-      st.metric("Ticket Médio por Cliente",f"R$ {ticket_medio_cliente:.2f}")
+      st.metric("Ticket Médio por Cliente",f"R$ {ticket_medio_cliente:,.0f}")
     with col4:
       st.metric("Principal Fornecedor",df_filtrado_fornecedores.iloc[0,0], f"R$ {df_filtrado_fornecedores.iloc[0,1]:.2f}")
     st.divider()
