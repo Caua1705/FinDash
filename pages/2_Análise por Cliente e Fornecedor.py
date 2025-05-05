@@ -11,7 +11,6 @@ def main() -> None:
         df_clientes=df_filtrado[df_filtrado["Tipo"]=="Receitas"]
         df_fornecedores=df_filtrado[df_filtrado["Tipo"]=="Despesas"]
         df_filtrado_clientes=filtrar_dataframes_para_graficos(df_clientes)
-        st.warning("Não há valores para essa data")
         df_filtrado_fornecedores=filtrar_dataframes_para_graficos(df_fornecedores)
         gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores)
 
