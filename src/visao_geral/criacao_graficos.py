@@ -27,7 +27,7 @@ def filtrar_por_ano_mes(df_formatado) -> tuple[pd.DataFrame,str,str]:
         mes_anterior=mes_atual-1
     df_filtrado_anterior=df_formatado.loc[(df_formatado["Data"].dt.year == ano_anterior) &
                                      (df_formatado["Data"].dt.month == mes_anterior)]
-    return df_filtrado,df_filtrado_anterior,filtro_mes,data_referencia 
+    return df_filtrado,df_filtrado_anterior,filtro_mes,data_referencia,numero_para_meses
 
 def agrupar_df_filtrado_para_metricas(df_filtrado,filtro_mes) -> pd.DataFrame:
     df_receitas_despesas=df_filtrado.pivot_table(index=["Centro de Custo / Receita"],
@@ -90,10 +90,11 @@ def gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) -> None:
 
     return df_receitas_despesas,df_receitas_mensais             
         
-def grafico_evolucao(df_formatado):
+def grafico_evolucao(df_formatado,numero_para_meses):
     st.subheader("Evolução Mensal")
     df_formatado["Mês"]=df_formatado["Data"].dt.month
     df_evolucao_temporal=df_formatado.groupby(["Mês","Tipo"])["Valor"].sum().reset_index()
+    df_evolucao_temporal["Mês"]=df_evolucao_temporal["Mês"].apply(lambda x: numero_para_meses[x] if x in numero_para_meses else x)
     fig2=px.line(df_evolucao_temporal,x="Mês",y="Valor",color="Tipo",markers=True)
     fig2.update_layout(title="Evolução Mensal de Receitas e Despesas",xaxis_title="Mês",yaxis_title="Valor",showlegend=True)
     st.plotly_chart(fig2,use_container_width=True)
