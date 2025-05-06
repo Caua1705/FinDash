@@ -44,6 +44,7 @@ def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
   fig2.update_layout(xaxis_title="Despesas",yaxis_title="Fornecedores",showlegend=False,height=370,bargap=0.3)
   st.plotly_chart(fig2,use_container_width=True)
   st.divider()
+  
 def transacoes_detalhadas(df_filtrado):
   # df_filtrado["Data"]=df_filtrado["Data"].dt.date
   valores_pesquisa=df_filtrado.loc[df_filtrado["Cliente / Fornecedor"]!="Desconhecido",
