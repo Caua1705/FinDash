@@ -15,7 +15,7 @@ def main() -> None:
     
         df_receitas_despesas=agrupar_df_filtrado_para_metricas(df_filtrado,filtro_mes)
         df_receitas_despesas_anterior=agrupar_df_filtrado_para_metricas(df_filtrado_anterior,filtro_mes)
-        st.subheader(f"## Visão Geral do Mês de {filtro_mes}")
+        st.subheader(f"Resumo de {filtro_mes}")
         criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior,filtro_mes)
 
         df_receitas_mensais=agrupar_df_filtrado_para_grafico_receita(df_filtrado)
