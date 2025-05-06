@@ -23,10 +23,10 @@ def criar_metricas(df_filtrado_clientes,df_filtrado_fornecedores):
     with col2:
       st.metric("Principal Fornecedor",df_filtrado_fornecedores.iloc[0,0], f"R$ {df_filtrado_fornecedores.iloc[0,1]:.2f}")
     with col3:
-      st.metric("Clientes Ativos",len(df_filtrado_clientes))
-    with col4:
       ticket_medio_cliente=df_filtrado_clientes["Receitas"].sum() / len(df_filtrado_clientes)
       st.metric("Ticket Médio por Cliente",f"R$ {ticket_medio_cliente:.2f}")
+    with col4:
+      st.metric("Clientes Ativos",len(df_filtrado_clientes))
 
 def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
   if len(df_filtrado_clientes)>10:
