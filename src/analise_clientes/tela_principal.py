@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from datetime import datetime
 
 def filtrar_dataframes_para_graficos(df_filtrado_para_grafico):
     df_gerado=pd.pivot_table(df_filtrado_para_grafico,
@@ -47,11 +48,11 @@ def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
         st.plotly_chart(fig2,use_container_width=True)
 
 def transacoes_detalhadas(df_filtrado):
+    # df_filtrado["Data"]=df_filtrado["Data"].dt.date
     valores_pesquisa=df_filtrado.loc[df_filtrado["Cliente / Fornecedor"]!="Desconhecido",
                                                         "Cliente / Fornecedor"].unique()
     st.write("### Filtrar Transações por Cliente ou Fornecedor:")
     valor_escolhido=st.selectbox("Selecione um Cliente ou Fornecedor",valores_pesquisa)
     df_valor_escolhido=df_filtrado.loc[df_filtrado["Cliente / Fornecedor"]==valor_escolhido]
     st.write(df_valor_escolhido)
-    st.subheader(f"💰 Total das Transações: R$ {df_valor_escolhido["Valor"].sum():,.2f}")
-    # st.subheader(f"💰 Total das Transações: R$ {total_valor:,.2f}")
+    st.success(f"💰 Total das Transações: R$ {df_valor_escolhido['Valor'].sum():,.2f}")
