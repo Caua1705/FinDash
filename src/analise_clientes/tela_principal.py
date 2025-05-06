@@ -30,8 +30,7 @@ def criar_metricas(df_filtrado_clientes,df_filtrado_fornecedores,df_clientes):
     with col4:
       ticket_medio_cliente=df_filtrado_clientes["Receitas"].sum() / len(df_filtrado_clientes)
       st.metric("Ticket Médio por Cliente",f"R$ {ticket_medio_cliente:.2f}")
-    st.divider()
-
+      
 def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
   col1,col2=st.columns(2)
   with col1:

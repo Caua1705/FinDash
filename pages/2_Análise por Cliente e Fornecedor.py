@@ -16,10 +16,12 @@ def main() -> None:
         df_filtrado_fornecedores=filtrar_dataframes_para_graficos(df_fornecedores)
 
         criar_metricas(df_filtrado_clientes,df_filtrado_fornecedores,df_clientes)
-        
-        gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores)
 
-        transacoes_detalhadas(df_filtrado)
+        tabs = st.tabs(["Gráficos", "Transações Detalhadas"])
+        with tabs[0]:
+            gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores)
+        with tabs[1]:
+            transacoes_detalhadas(df_filtrado)
 
     else:
         st.warning("Faça o upload do arquivo!")
