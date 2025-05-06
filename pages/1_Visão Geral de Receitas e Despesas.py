@@ -9,7 +9,7 @@ def main() -> None:
         df_filtrado,df_filtrado_anterior,filtro_mes,data_referencia,numero_para_meses=filtrar_por_ano_mes(df_formatado)
 
         df_receitas_despesas=agrupar_df_filtrado_para_metricas(df_filtrado)
-        df_receitas_despesas_anterior=agrupar_df_filtrado_para_metricas(df_filtrado_anterior,filtro_mes)
+        df_receitas_despesas_anterior=agrupar_df_filtrado_para_metricas(df_filtrado_anterior)
 
         criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior)
 
@@ -22,7 +22,7 @@ def main() -> None:
             st.markdown("### 📄 Exportação do relatório")
             st.markdown("Você pode baixar o relatório financeiro mensal em formato Excel.")
             criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia)
-            
+
         with tabs[1]:
             grafico_evolucao(df_formatado,numero_para_meses) 
 
