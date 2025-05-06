@@ -7,7 +7,7 @@ def main() -> None:
 
         st.title("Visão geral de Receitas e Despesas") 
 
-        tabs = st.tabs(["Resumo do Mês", "Evolução Mensal"])
+        # tabs = st.tabs(["Resumo do Mês", "Evolução Mensal"])
         
         # with tabs[0]:
 
