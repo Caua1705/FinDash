@@ -1,5 +1,5 @@
 import streamlit as st
-from src.visao_geral.criacao_graficos import agrupar_df_filtrado_para_grafico_receita,agrupar_df_filtrado_para_metricas, gerar_graficos, filtrar_por_ano_mes, criacao_metricas
+from src.visao_geral.criacao_graficos import agrupar_df_filtrado_para_grafico_receita,agrupar_df_filtrado_para_metricas, gerar_graficos, filtrar_por_ano_mes, criacao_metricas ,grafico_evolucao 
 from src.visao_geral.criacao_arquivo_excel import criando_arquivo_excel
 def main() -> None:
     if "df_formatado" in st.session_state:
@@ -15,8 +15,13 @@ def main() -> None:
 
         df_receitas_mensais=agrupar_df_filtrado_para_grafico_receita(df_filtrado)
 
-        gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) 
-        criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia)
+        tabs = st.tabs(["Resumo do Mês", "Evolução Mensal"])
+        with tabs[0]:
+            gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) 
+            criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia)
+        with tabs[1]:
+            grafico_evolucao(df_formatado) 
+
     else:
         st.warning("Faça o upload do arquivo!")
         
