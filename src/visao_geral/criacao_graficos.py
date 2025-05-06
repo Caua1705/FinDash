@@ -30,12 +30,6 @@ def filtrar_por_ano_mes(df_formatado) -> tuple[pd.DataFrame,str,str]:
     return df_filtrado,df_filtrado_anterior,filtro_mes,data_referencia 
 
 def agrupar_df_filtrado_para_metricas(df_filtrado,filtro_mes) -> pd.DataFrame:
-    if (df_filtrado["Tipo"] =="Receitas").all(): 
-        st.error(f"O mês de {filtro_mes} não possui despesas.")
-        st.stop()
-    if (df_filtrado["Tipo"]=="Despesas").all(): 
-        st.error(f"O mês de {filtro_mes} não possui receitas.")
-        st.stop()
     df_receitas_despesas=df_filtrado.pivot_table(index=["Centro de Custo / Receita"],
                                                     columns="Tipo",
                                                     values="Valor",
