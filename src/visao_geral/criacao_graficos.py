@@ -72,7 +72,7 @@ def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior):
 
 def gerar_graficos(df_receitas_despesas,filtro_mes,df_formatado) -> None:
     col1,col2=st.columns(2)
-    with col1:               
+    with col2:               
         st.subheader("Evolução Temporal das Receitas e Despesas")
         df_formatado["Mês"]=df_formatado["Data"].dt.month
         df_evolucao_temporal=df_formatado.groupby(["Mês","Tipo"])["Valor"].sum().reset_index()
@@ -89,7 +89,7 @@ def gerar_graficos(df_receitas_despesas,filtro_mes,df_formatado) -> None:
     # df_receitas_mensais=receitas_mensais.groupby("Centro de Custo / Receita")["Valor"].sum().sort_values(ascending=False).reset_index()
     # df_receitas_mensais.loc[len(df_receitas_mensais)] = ["TOTAL",df_receitas_mensais["Valor"].sum()]
     # return df_receitas_despesas,df_receitas_mensais
-    with col2:    
+    with col1:    
         st.subheader("Total de Receitas e Despesas")
         fig1=px.bar(df_receitas_despesas,x="Centro de Custo / Receita",y=["Receitas","Despesas"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title=f"Receitas e Despesas por Centro de Custo / Receita em {filtro_mes}")
         fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Centro de Custo / Receita",yaxis_title="Valor",showlegend=True)
