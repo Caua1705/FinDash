@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 
 def filtrar_por_ano_mes(df_formatado) -> tuple[pd.DataFrame,str,str]:
+    st.subheader("Selecione o Período para Análise")
     col1,col2=st.columns(2)
     numero_para_meses={1:"Janeiro",2:"Fevereiro",3:"Março",4:"Abril",5:"Maio",6:"Junho",7:"Julho",8:"Agosto",9:"Setembro",10:"Outubro",11:"Novembro",12:"Dezembro"}
     meses_para_numero={v:k for k, v in numero_para_meses.items()}
@@ -42,6 +43,7 @@ def agrupar_df_filtrado_para_metricas(df_filtrado,filtro_mes) -> pd.DataFrame:
     return df_receitas_despesas
 
 def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior):
+    st.subheader("Métricas Financeiras")
     df_receitas_despesas=df_receitas_despesas.loc[df_receitas_despesas["Centro de Custo / Receita"]!="TOTAL"]
     col1,col2,col3,col4=st.columns(4)
     with col1:
@@ -64,6 +66,7 @@ def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior):
         roi_consolidado_anterior=(saldo_liquido_anterior/total_despesas_anterior) * 100
         delta_roi= (roi_consolidado - roi_consolidado_anterior) / roi_consolidado_anterior * 100
         st.metric("ROI Consolidado",f"{roi_consolidado:,.2f}%",f"{delta_roi:.2f}%")
+    st.divider()
 
 def agrupar_df_filtrado_para_grafico_receita(df_filtrado):
     receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="Receitas"]
@@ -72,6 +75,7 @@ def agrupar_df_filtrado_para_grafico_receita(df_filtrado):
     return df_receitas_mensais
 
 def gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) -> None:
+    st.subheader("Análise Gráfica")
     col1,col2=st.columns(2)
     with col1:    
         st.subheader("Total de Receitas e Despesas")
