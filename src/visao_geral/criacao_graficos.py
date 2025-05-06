@@ -43,7 +43,7 @@ def agrupar_df_filtrado_para_metricas(df_filtrado,filtro_mes) -> pd.DataFrame:
 
 def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior,filtro_mes):
     df_receitas_despesas=df_receitas_despesas.loc[df_receitas_despesas["Centro de Custo / Receita"]!="TOTAL"]
-    st.write(f"Métricas de {filtro_mes}")
+    st.markdown(f"Métricas de {filtro_mes}")
     col1,col2,col3,col4=st.columns(4)
     with col1:
         total_receitas=df_receitas_despesas["Receitas"].sum()
@@ -65,6 +65,7 @@ def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior,filtro_m
         roi_consolidado_anterior=(saldo_liquido_anterior/total_despesas_anterior) * 100
         delta_roi= (roi_consolidado - roi_consolidado_anterior) / roi_consolidado_anterior * 100
         st.metric("ROI Consolidado",f"{roi_consolidado:,.2f}%",f"{delta_roi:.2f}%")
+    st.divider()
 
 def agrupar_df_filtrado_para_grafico_receita(df_filtrado):
     receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="Receitas"]
