@@ -41,8 +41,9 @@ def agrupar_df_filtrado_para_metricas(df_filtrado,filtro_mes) -> pd.DataFrame:
     df_receitas_despesas.loc[len(df_receitas_despesas)] = ["TOTAL",df_receitas_despesas["Receitas"].sum(),df_receitas_despesas["Despesas"].sum()]
     return df_receitas_despesas
 
-def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior):
+def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior,filtro_mes):
     df_receitas_despesas=df_receitas_despesas.loc[df_receitas_despesas["Centro de Custo / Receita"]!="TOTAL"]
+    st.write("Métricas de {}")
     col1,col2,col3,col4=st.columns(4)
     with col1:
         total_receitas=df_receitas_despesas["Receitas"].sum()
