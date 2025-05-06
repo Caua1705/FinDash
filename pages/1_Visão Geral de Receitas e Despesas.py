@@ -15,7 +15,7 @@ def main() -> None:
 
         df_receitas_mensais=agrupar_df_filtrado_para_grafico_receita(df_filtrado)
 
-        gerar_graficos(df_receitas_despesas,df_formatado,filtro_mes) 
+        gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) 
         criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia)
     else:
         st.warning("Faça o upload do arquivo!")
