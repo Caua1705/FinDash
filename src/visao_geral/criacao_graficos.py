@@ -74,7 +74,6 @@ def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior,filtro_m
         else:
             delta_roi= (roi_consolidado - roi_consolidado_anterior) / roi_consolidado_anterior * 100
         st.metric("ROI Consolidado",f"{roi_consolidado:,.2f}%",f"{delta_roi:.2f}%")
-    st.divider()
 
 def agrupar_df_filtrado_para_grafico_receita(df_filtrado):
     receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="Receitas"]
