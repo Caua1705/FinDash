@@ -76,7 +76,7 @@ def agrupar_df_filtrado_para_grafico_receita(df_filtrado):
 
 def gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) -> None:
     st.subheader("Análise Gráfica")
-    with st.expander("Visualização Gráfica")
+    with st.expander("Visualização Gráfica"):
         col1,col2=st.columns(2)
         with col1:    
             st.subheader("Total de Receitas e Despesas")
