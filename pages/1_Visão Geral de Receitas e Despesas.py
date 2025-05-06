@@ -5,9 +5,10 @@ def main() -> None:
     if "df_formatado" in st.session_state:
         df_formatado=st.session_state.df_formatado
 
+        st.title("Visão geral de Receitas e Despesas") 
+        
         tabs = st.tabs(["Resumo do Mês", "Evolução Mensal"])
         with tabs[0]:
-            st.title("Visão geral de Receitas e Despesas") 
 
             df_filtrado,df_filtrado_anterior,filtro_mes,data_referencia=filtrar_por_ano_mes(df_formatado)
     
