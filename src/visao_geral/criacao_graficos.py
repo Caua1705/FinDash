@@ -12,7 +12,7 @@ def filtrar_por_ano_mes(df_formatado) -> tuple[pd.DataFrame,str,str]:
         filtro_ano=st.selectbox("Selecione o ano:",ano)
         meses_disponiveis=df_formatado.loc[df_formatado["Data"].dt.year == filtro_ano,"Data"].dt.month.unique()
     with col2:  
-        filtro_mes=st.sidebar.selectbox("Selecione o mês:",[numero_para_meses[mes] for mes in meses_disponiveis])
+        filtro_mes=st.selectbox("Selecione o mês:",[numero_para_meses[mes] for mes in meses_disponiveis])
         df_filtrado=df_formatado.loc[(df_formatado["Data"].dt.year == filtro_ano) &
                                      (df_formatado["Data"].dt.month == meses_para_numero[filtro_mes])]
         data_filtrada=df_filtrado["Data"].iloc[0]
