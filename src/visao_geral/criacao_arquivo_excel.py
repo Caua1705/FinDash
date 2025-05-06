@@ -76,7 +76,7 @@ def formatar_arquivo_excel(sheet) -> None:
     grafico.y_axis.majorGridlines = None
     sheet.add_chart(grafico,"G1")
 
-def criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia) -> None:
+def gerar_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia) -> None:
     with tempfile.TemporaryDirectory() as dir_temp:
         nome_arquivo=f"Relatório mensal - {data_referencia}.xlsx"
         diretorio_arquivo_temporario= Path(dir_temp) / nome_arquivo

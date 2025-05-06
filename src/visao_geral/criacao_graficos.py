@@ -2,7 +2,7 @@ import plotly.express as px
 import streamlit as st
 import pandas as pd
 
-def filtrar_por_ano_mes(df_formatado) -> tuple[pd.DataFrame,str,str]:
+def filtrar_dados_por_ano_mes(df_formatado) -> tuple[pd.DataFrame,str,str]:
     numero_para_meses={1:"Janeiro",2:"Fevereiro",3:"Março",4:"Abril",5:"Maio",6:"Junho",7:"Julho",8:"Agosto",9:"Setembro",10:"Outubro",11:"Novembro",12:"Dezembro"}
     meses_para_numero={v:k for k, v in numero_para_meses.items()}
     ano=df_formatado["Data"].dt.year.unique()
@@ -27,7 +27,7 @@ def filtrar_por_ano_mes(df_formatado) -> tuple[pd.DataFrame,str,str]:
                                      (df_formatado["Data"].dt.month == mes_anterior)]
     return df_filtrado,df_filtrado_anterior,filtro_mes,data_referencia,numero_para_meses
 
-def agrupar_df_filtrado_para_metricas(df_filtrado) -> pd.DataFrame:
+def agrupar_dados_para_metricas(df_filtrado) -> pd.DataFrame:
     df_receitas_despesas=df_filtrado.pivot_table(index=["Centro de Custo / Receita"],
                                                     columns="Tipo",
                                                     values="Valor",
@@ -39,7 +39,7 @@ def agrupar_df_filtrado_para_metricas(df_filtrado) -> pd.DataFrame:
     df_receitas_despesas.loc[len(df_receitas_despesas)] = ["TOTAL",df_receitas_despesas["Receitas"].sum(),df_receitas_despesas["Despesas"].sum()]
     return df_receitas_despesas
 
-def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior):
+def exibir_metricas_financeiras(df_receitas_despesas,df_receitas_despesas_anterior):
     df_receitas_despesas=df_receitas_despesas.loc[df_receitas_despesas["Centro de Custo / Receita"]!="TOTAL"]
     col1,col2,col3,col4=st.columns(4)
     with col1:
@@ -75,13 +75,13 @@ def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior):
             delta_roi= (roi_consolidado - roi_consolidado_anterior) / roi_consolidado_anterior * 100
         st.metric("ROI Consolidado",f"{roi_consolidado:,.2f}%",f"{delta_roi:.2f}%")
 
-def agrupar_df_filtrado_para_grafico_receita(df_filtrado):
+def agrupar_dados_para_grafico_receita(df_filtrado):
     receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="Receitas"]
     df_receitas_mensais=receitas_mensais.groupby("Centro de Custo / Receita")["Valor"].sum().sort_values(ascending=False).reset_index()
     df_receitas_mensais.loc[len(df_receitas_mensais)] = ["TOTAL",df_receitas_mensais["Valor"].sum()]
     return df_receitas_mensais
 
-def gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) -> None:
+def exibir_graficos_receitas_despesas(df_receitas_despesas,df_receitas_mensais,filtro_mes) -> None:
     col1,col2=st.columns(2)
     with col1:    
         st.subheader("Total de Receitas e Despesas")
@@ -100,7 +100,7 @@ def gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) -> None:
 
     return df_receitas_despesas,df_receitas_mensais             
         
-def grafico_evolucao(df_formatado,numero_para_meses):
+def exibir_evolucao_mensal(df_formatado,numero_para_meses):
     st.subheader("Evolução Mensal")
     df_formatado["Mês"]=df_formatado["Data"].dt.month
     df_evolucao_temporal=df_formatado.groupby(["Mês","Tipo"])["Valor"].sum().reset_index()
