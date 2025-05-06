@@ -19,8 +19,10 @@ def main() -> None:
 
         tabs = st.tabs(["Gráficos", "Transações Detalhadas"])
         with tabs[0]:
+            st.markdown("### Gráficos de Análise")
             gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores)
         with tabs[1]:
+            st.markdown("### Detalhamento das Transações")
             transacoes_detalhadas(df_filtrado)
 
     else:
