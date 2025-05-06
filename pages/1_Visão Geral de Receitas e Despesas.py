@@ -3,8 +3,10 @@ from src.visao_geral.criacao_graficos import agrupar_df_filtrado_para_grafico_re
 from src.visao_geral.criacao_arquivo_excel import criando_arquivo_excel
 def main() -> None:
     if "df_formatado" in st.session_state:
+        df_formatado=st.session_state.df_formatado
+
+        tabs = st.tabs(["Resumo do Mês", "Evolução Mensal"])
         with tabs[0]:
-            df_formatado=st.session_state.df_formatado
             st.title("Visão geral de Receitas e Despesas") 
 
             df_filtrado,df_filtrado_anterior,filtro_mes,data_referencia=filtrar_por_ano_mes(df_formatado)
@@ -16,7 +18,6 @@ def main() -> None:
 
             df_receitas_mensais=agrupar_df_filtrado_para_grafico_receita(df_filtrado)
 
-            tabs = st.tabs(["Resumo do Mês", "Evolução Mensal"])
             gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) 
             criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia)
         with tabs[1]:
