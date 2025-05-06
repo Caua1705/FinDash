@@ -30,27 +30,24 @@ def criar_metricas(df_filtrado_clientes,df_filtrado_fornecedores,df_clientes):
     with col4:
       ticket_medio_cliente=df_filtrado_clientes["Receitas"].sum() / len(df_filtrado_clientes)
       st.metric("Ticket Médio por Cliente",f"R$ {ticket_medio_cliente:.2f}")
-      
+
 def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
-  col1,col2=st.columns(2)
-  with col1:
-    if len(df_filtrado_clientes)>10:
-        df_filtrado_clientes=df_filtrado_clientes.iloc[:10]
-    st.markdown("### Principais Clientes:")
-    fig1=px.bar(df_filtrado_clientes,x="Receitas",y="Cliente / Fornecedor",title="Participação dos principais clientes nas receitas",color="Cliente / Fornecedor",orientation="h")
-    fig1.update_layout(xaxis_title="Receitas",yaxis_title="Clientes",showlegend=False,height=370,bargap=0.3)
-    st.plotly_chart(fig1,use_container_width=True)
-  with col2:
-    if len(df_filtrado_fornecedores)>10:
-        df_filtrado_fornecedores=df_filtrado_fornecedores.iloc[:10]
-    st.markdown("### Principais Fornecedores:")
-    fig2=px.bar(df_filtrado_fornecedores,x="Despesas",y="Cliente / Fornecedor",title="Participação dos principais fornecedores nas despesas",color="Cliente / Fornecedor",orientation="h")
-    fig2.update_layout(xaxis_title="Despesas",yaxis_title="Fornecedores",showlegend=False,height=370,bargap=0.3)
-    st.plotly_chart(fig2,use_container_width=True)
+  if len(df_filtrado_clientes)>10:
+      df_filtrado_clientes=df_filtrado_clientes.iloc[:10]
+  st.markdown("### Principais Clientes:")
+  fig1=px.bar(df_filtrado_clientes,x="Receitas",y="Cliente / Fornecedor",title="Participação dos principais clientes nas receitas",color="Cliente / Fornecedor",orientation="h")
+  fig1.update_layout(xaxis_title="Receitas",yaxis_title="Clientes",showlegend=False,height=370,bargap=0.3)
+  st.plotly_chart(fig1,use_container_width=True)
+
+  if len(df_filtrado_fornecedores)>10:
+      df_filtrado_fornecedores=df_filtrado_fornecedores.iloc[:10]
+  st.markdown("### Principais Fornecedores:")
+  fig2=px.bar(df_filtrado_fornecedores,x="Despesas",y="Cliente / Fornecedor",title="Participação dos principais fornecedores nas despesas",color="Cliente / Fornecedor",orientation="h")
+  fig2.update_layout(xaxis_title="Despesas",yaxis_title="Fornecedores",showlegend=False,height=370,bargap=0.3)
+  st.plotly_chart(fig2,use_container_width=True)
 
 def transacoes_detalhadas(df_filtrado):
   # df_filtrado["Data"]=df_filtrado["Data"].dt.date
-  col1,col2=st.columns(2)
   valores_pesquisa=df_filtrado.loc[df_filtrado["Cliente / Fornecedor"]!="Desconhecido",
                                                       "Cliente / Fornecedor"].unique()
   st.write("### Filtrar Transações por Cliente ou Fornecedor:")
