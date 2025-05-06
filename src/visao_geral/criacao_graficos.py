@@ -62,7 +62,6 @@ def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior,filtro_m
         roi_consolidado_anterior=(saldo_liquido_anterior/total_despesas_anterior) * 100
         delta_roi= (roi_consolidado - roi_consolidado_anterior) / roi_consolidado_anterior * 100
         st.metric("ROI Consolidado",f"{roi_consolidado:,.2f}%",f"{delta_roi:.2f}%")
-    st.divider()
 
 def agrupar_df_filtrado_para_grafico_receita(df_filtrado):
     receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="Receitas"]
@@ -85,6 +84,7 @@ def gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) -> None:
         fig2=px.pie(df_receitas_mensais,names="Centro de Custo / Receita",values="Valor",title=f"Distribuição das maiores Receitas em {filtro_mes}",color="Centro de Custo / Receita")
         fig2.update_traces(textinfo="percent+label")       
         col2.plotly_chart(fig2,use_container_width=True)
+    st.divider()
 
     return df_receitas_despesas,df_receitas_mensais             
         
