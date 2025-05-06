@@ -83,4 +83,5 @@ def gerar_graficos(df_receitas_despesas,filtro_mes,df_formatado) -> None:
         df_formatado["Mês"]=df_formatado["Data"].dt.month
         df_evolucao_temporal=df_formatado.groupby(["Mês","Tipo"])["Valor"].sum().reset_index()
         fig2=px.line(df_evolucao_temporal,x="Mês",y="Valor",color="Tipo",markers=True)
+        fig2.update_layout(title="Evolução Mensal de Receitas e Despesas",xaxis_title="Mês",yaxis_title="Valor",showlegend=True)
         st.plotly_chart(fig2)
