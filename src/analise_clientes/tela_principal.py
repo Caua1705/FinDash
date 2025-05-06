@@ -18,15 +18,11 @@ def filtrar_dataframes_para_graficos(df_filtrado_para_grafico):
 
 def criar_metricas(df_filtrado_clientes,df_filtrado_fornecedores):
     col1,col2,col3,col4=st.columns(4)
-    with col1:
-      st.metric("Top 1 Cliente",df_filtrado_clientes.iloc[0,0], f"R$ {df_filtrado_clientes.iloc[0,1]:.2f}")
-    with col2:
-      st.metric("Principal Fornecedor",df_filtrado_fornecedores.iloc[0,0], f"R$ {df_filtrado_fornecedores.iloc[0,1]:.2f}")
-    with col3:
-      st.metric("Clientes Ativos",len(df_filtrado_clientes))
-    with col4:
-      ticket_medio_cliente=df_filtrado_clientes["Receitas"].sum() / len(df_filtrado_clientes)
-      st.metric("Ticket Médio por Cliente",f"R$ {ticket_medio_cliente:.2f}")
+    col1.metric("Top 1 Cliente",df_filtrado_clientes.iloc[0,0], f"R$ {df_filtrado_clientes.iloc[0,1]:.2f}")
+    col2.metric("Principal Fornecedor",df_filtrado_fornecedores.iloc[0,0], f"R$ {df_filtrado_fornecedores.iloc[0,1]:.2f}")
+    col3.metric("Clientes Ativos",len(df_filtrado_clientes))
+    ticket_medio_cliente=df_filtrado_clientes["Receitas"].sum() / len(df_filtrado_clientes)
+    col4.metric("Ticket Médio por Cliente",f"R$ {ticket_medio_cliente:.2f}")
 
 def gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores):
   if len(df_filtrado_clientes)>10:
