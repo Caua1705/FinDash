@@ -73,7 +73,7 @@ def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior):
 def gerar_graficos(df_receitas_despesas,filtro_mes,df_formatado) -> None:
     col1,col2=st.columns(2)
     with col2:               
-        st.subheader("Evolução Temporal das Receitas e Despesas")
+        st.subheader("Evolução Mensal")
         df_formatado["Mês"]=df_formatado["Data"].dt.month
         df_evolucao_temporal=df_formatado.groupby(["Mês","Tipo"])["Valor"].sum().reset_index()
         fig2=px.line(df_evolucao_temporal,x="Mês",y="Valor",color="Tipo")
