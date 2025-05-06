@@ -5,13 +5,12 @@ def main() -> None:
     if "df_formatado" in st.session_state:
         df_formatado=st.session_state.df_formatado
         st.title("Visão geral de Receitas e Despesas") 
+        df_filtrado,df_filtrado_anterior,filtro_mes,data_referencia=filtrar_por_ano_mes(df_formatado)
+ 
         df_receitas_despesas=agrupar_df_filtrado(df_filtrado,filtro_mes)
         df_receitas_despesas_anterior=agrupar_df_filtrado(df_filtrado_anterior,filtro_mes)
- 
 
         criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior)
-        st.subheader("Total de Receitas e Despesas")
-        df_filtrado,df_filtrado_anterior,filtro_mes,data_referencia=filtrar_por_ano_mes(df_formatado)
         gerar_graficos(df_receitas_despesas,filtro_mes,df_formatado) 
         # criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia)
     else:
