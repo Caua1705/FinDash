@@ -71,14 +71,9 @@ def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior):
     st.divider()
 
 def gerar_graficos(df_receitas_despesas,filtro_mes) -> None:
-    # col1,col2=st.columns(2)
-    # with col1:    
-    st.subheader("Total de Receitas e Despesas")
-    fig1=px.bar(df_receitas_despesas,x="Centro de Custo / Receita",y=["Receitas","Despesas"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title=f"Receitas e Despesas por Centro de Custo / Receita em {filtro_mes}")
-    fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Centro de Custo / Receita",yaxis_title="Valor",showlegend=True)
-    st.plotly_chart(fig1)
-    # with col2:               
-    #     st.subheader("Principais Centros de Receita")
+    col1,col2=st.columns(2)
+    with col1:               
+        st.subheader("Evolução Temporal das Receitas e Despesas")
     #     if len(df_receitas_mensais)>2:
     #         df_receitas_mensais=df_receitas_mensais.loc[0:2]
     #     fig2=px.pie(df_receitas_mensais,names="Centro de Custo / Receita",values="Valor",title=f"Distribuição das maiores Receitas em {filtro_mes}",color="Centro de Custo / Receita")
@@ -89,3 +84,8 @@ def gerar_graficos(df_receitas_despesas,filtro_mes) -> None:
     # df_receitas_mensais=receitas_mensais.groupby("Centro de Custo / Receita")["Valor"].sum().sort_values(ascending=False).reset_index()
     # df_receitas_mensais.loc[len(df_receitas_mensais)] = ["TOTAL",df_receitas_mensais["Valor"].sum()]
     # return df_receitas_despesas,df_receitas_mensais
+    with col2:    
+        st.subheader("Total de Receitas e Despesas")
+        fig1=px.bar(df_receitas_despesas,x="Centro de Custo / Receita",y=["Receitas","Despesas"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title=f"Receitas e Despesas por Centro de Custo / Receita em {filtro_mes}")
+        fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Centro de Custo / Receita",yaxis_title="Valor",showlegend=True)
+        st.plotly_chart(fig1)
