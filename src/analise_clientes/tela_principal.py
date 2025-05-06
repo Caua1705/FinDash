@@ -49,8 +49,8 @@ def transacoes_detalhadas(df_filtrado):
   # df_filtrado["Data"]=df_filtrado["Data"].dt.date
   valores_pesquisa=df_filtrado.loc[df_filtrado["Cliente / Fornecedor"]!="Desconhecido",
                                                       "Cliente / Fornecedor"].unique()
-  st.write("### Filtrar Transações por Cliente ou Fornecedor:")
   valor_escolhido=st.selectbox("Selecione um Cliente ou Fornecedor",valores_pesquisa)
   df_valor_escolhido=df_filtrado.loc[df_filtrado["Cliente / Fornecedor"]==valor_escolhido]
-  st.write(df_valor_escolhido)
+  with st.expander(f"Detalhes das transações de {valor_escolhido}"):
+    st.write(df_valor_escolhido)
   st.success(f"💰 Total das Transações: R$ {df_valor_escolhido['Valor'].sum():,.2f}")
