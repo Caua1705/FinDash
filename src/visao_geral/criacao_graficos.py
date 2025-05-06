@@ -36,13 +36,13 @@ def agrupar_df_filtrado_para_metricas(df_filtrado,filtro_mes) -> pd.DataFrame:
     if (df_filtrado["Tipo"]=="Despesas").all(): 
         st.error(f"O mês de {filtro_mes} não possui receitas.")
         st.stop()
-    df_receitas_despesas=df_filtrado.pivot_table(index=["Centro de Custo / Receita","Data"],
+    df_receitas_despesas=df_filtrado.pivot_table(index=["Centro de Custo / Receita"],
                                                     columns="Tipo",
                                                     values="Valor",
                                                     aggfunc="sum",
                                                     fill_value=0,
                                                     ).reset_index()
-    df_receitas_despesas=df_receitas_despesas[["Data","Centro de Custo / Receita","Receitas","Despesas"]]
+    df_receitas_despesas=df_receitas_despesas[["Centro de Custo / Receita","Receitas","Despesas"]]
     df_receitas_despesas=df_receitas_despesas.sort_values(by="Receitas",ascending=False)
     return df_receitas_despesas
 
@@ -75,17 +75,8 @@ def agrupar_df_filtrado_para_grafico_receita(df_filtrado):
     df_receitas_mensais=receitas_mensais.groupby("Centro de Custo / Receita")["Valor"].sum().sort_values(ascending=False).reset_index()
     df_receitas_mensais.loc[len(df_receitas_mensais)] = ["TOTAL",df_receitas_mensais["Valor"].sum()]
     return df_receitas_mensais
-    if len(df_receitas_mensais)>2:
-        df_receitas_mensais=df_receitas_mensais.loc[0:2]
-    fig2=px.pie(df_receitas_mensais,names="Centro de Custo / Receita",values="Valor",title=f"Distribuição das maiores Receitas em {filtro_mes}",color="Centro de Custo / Receita")
-    fig2.update_traces(textinfo="percent+label")       
-    col2.plotly_chart(fig2)
-    st.divider()
-    return df_receitas_despesas,df_receitas_mensais
-
 
 def gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) -> None:
-
     col1,col2=st.columns(2)
     with col1:    
         st.subheader("Total de Receitas e Despesas")
