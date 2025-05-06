@@ -3,17 +3,16 @@ import streamlit as st
 import pandas as pd
 
 def filtrar_por_ano_mes(df_formatado) -> tuple[pd.DataFrame,str,str]:
-    st.subheader("Selecione o Período para Análise")
     col1,col2=st.columns(2)
     numero_para_meses={1:"Janeiro",2:"Fevereiro",3:"Março",4:"Abril",5:"Maio",6:"Junho",7:"Julho",8:"Agosto",9:"Setembro",10:"Outubro",11:"Novembro",12:"Dezembro"}
     meses_para_numero={v:k for k, v in numero_para_meses.items()}
     ano=df_formatado["Data"].dt.year.unique()
-
+    st.markdown("Selecione um filtro")
     with col1:  
-        filtro_ano=st.selectbox("Selecione o ano:",ano)
+        filtro_ano=st.sidebar.selectbox("Selecione o ano:",ano)
         meses_disponiveis=df_formatado.loc[df_formatado["Data"].dt.year == filtro_ano,"Data"].dt.month.unique()
     with col2:  
-        filtro_mes=st.selectbox("Selecione o mês:",[numero_para_meses[mes] for mes in meses_disponiveis])
+        filtro_mes=st.sidebar.selectbox("Selecione o mês:",[numero_para_meses[mes] for mes in meses_disponiveis])
         df_filtrado=df_formatado.loc[(df_formatado["Data"].dt.year == filtro_ano) &
                                      (df_formatado["Data"].dt.month == meses_para_numero[filtro_mes])]
         data_filtrada=df_filtrado["Data"].iloc[0]
@@ -43,7 +42,6 @@ def agrupar_df_filtrado_para_metricas(df_filtrado,filtro_mes) -> pd.DataFrame:
     return df_receitas_despesas
 
 def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior):
-    st.subheader("Métricas Financeiras")
     df_receitas_despesas=df_receitas_despesas.loc[df_receitas_despesas["Centro de Custo / Receita"]!="TOTAL"]
     col1,col2,col3,col4=st.columns(4)
     with col1:
@@ -66,7 +64,6 @@ def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior):
         roi_consolidado_anterior=(saldo_liquido_anterior/total_despesas_anterior) * 100
         delta_roi= (roi_consolidado - roi_consolidado_anterior) / roi_consolidado_anterior * 100
         st.metric("ROI Consolidado",f"{roi_consolidado:,.2f}%",f"{delta_roi:.2f}%")
-    st.divider()
 
 def agrupar_df_filtrado_para_grafico_receita(df_filtrado):
     receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="Receitas"]
@@ -75,23 +72,21 @@ def agrupar_df_filtrado_para_grafico_receita(df_filtrado):
     return df_receitas_mensais
 
 def gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) -> None:
-    st.subheader("Análise Gráfica")
-    with st.expander("Visualização Gráfica"):
-        col1,col2=st.columns(2)
-        with col1:    
-            st.subheader("Total de Receitas e Despesas")
-            fig1=px.bar(df_receitas_despesas,x="Centro de Custo / Receita",y=["Receitas","Despesas"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title=f"Receitas e Despesas por Centro de Custo / Receita em {filtro_mes}")
-            fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Centro de Custo / Receita",yaxis_title="Valor",showlegend=True)
-            st.plotly_chart(fig1,use_container_width=True)
+    col1,col2=st.columns(2)
+    with col1:    
+        st.subheader("Total de Receitas e Despesas")
+        fig1=px.bar(df_receitas_despesas,x="Centro de Custo / Receita",y=["Receitas","Despesas"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title=f"Receitas e Despesas por Centro de Custo / Receita em {filtro_mes}")
+        fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Centro de Custo / Receita",yaxis_title="Valor",showlegend=True)
+        st.plotly_chart(fig1,use_container_width=True)
 
-        with col2:  
-            if len(df_receitas_mensais)>2:
-                df_receitas_mensais=df_receitas_mensais.loc[0:2]
-            st.subheader("Maiores Receitas")
-            fig2=px.pie(df_receitas_mensais,names="Centro de Custo / Receita",values="Valor",title=f"Distribuição das maiores Receitas em {filtro_mes}",color="Centro de Custo / Receita")
-            fig2.update_traces(textinfo="percent+label")       
-            col2.plotly_chart(fig2,use_container_width=True)
-        st.divider()
+    with col2:  
+        if len(df_receitas_mensais)>2:
+            df_receitas_mensais=df_receitas_mensais.loc[0:2]
+        st.subheader("Maiores Receitas")
+        fig2=px.pie(df_receitas_mensais,names="Centro de Custo / Receita",values="Valor",title=f"Distribuição das maiores Receitas em {filtro_mes}",color="Centro de Custo / Receita")
+        fig2.update_traces(textinfo="percent+label")       
+        col2.plotly_chart(fig2,use_container_width=True)
+    st.divider()
 
     return df_receitas_despesas,df_receitas_mensais             
         
