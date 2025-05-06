@@ -27,6 +27,6 @@ if upload_planilha is not None:
 
     st.success("✅Arquivo carregado com sucesso!")
     st.subheader("Pré-visualização dos dados formatados:")
-    st.write(df_formatado.head())
+    st.write(df_formatado)
     st.session_state.df_formatado=df_formatado
 
