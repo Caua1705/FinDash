@@ -76,21 +76,22 @@ def agrupar_df_filtrado_para_grafico_receita(df_filtrado):
 
 def gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) -> None:
     st.subheader("Análise Gráfica")
-    col1,col2=st.columns(2)
-    with col1:    
-        st.subheader("Total de Receitas e Despesas")
-        fig1=px.bar(df_receitas_despesas,x="Centro de Custo / Receita",y=["Receitas","Despesas"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title=f"Receitas e Despesas por Centro de Custo / Receita em {filtro_mes}")
-        fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Centro de Custo / Receita",yaxis_title="Valor",showlegend=True)
-        st.plotly_chart(fig1,use_container_width=True)
+    with st.expander("Visualização Gráfica")
+        col1,col2=st.columns(2)
+        with col1:    
+            st.subheader("Total de Receitas e Despesas")
+            fig1=px.bar(df_receitas_despesas,x="Centro de Custo / Receita",y=["Receitas","Despesas"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title=f"Receitas e Despesas por Centro de Custo / Receita em {filtro_mes}")
+            fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Centro de Custo / Receita",yaxis_title="Valor",showlegend=True)
+            st.plotly_chart(fig1,use_container_width=True)
 
-    with col2:  
-        if len(df_receitas_mensais)>2:
-            df_receitas_mensais=df_receitas_mensais.loc[0:2]
-        st.subheader("Maiores Receitas")
-        fig2=px.pie(df_receitas_mensais,names="Centro de Custo / Receita",values="Valor",title=f"Distribuição das maiores Receitas em {filtro_mes}",color="Centro de Custo / Receita")
-        fig2.update_traces(textinfo="percent+label")       
-        col2.plotly_chart(fig2,use_container_width=True)
-    st.divider()
+        with col2:  
+            if len(df_receitas_mensais)>2:
+                df_receitas_mensais=df_receitas_mensais.loc[0:2]
+            st.subheader("Maiores Receitas")
+            fig2=px.pie(df_receitas_mensais,names="Centro de Custo / Receita",values="Valor",title=f"Distribuição das maiores Receitas em {filtro_mes}",color="Centro de Custo / Receita")
+            fig2.update_traces(textinfo="percent+label")       
+            col2.plotly_chart(fig2,use_container_width=True)
+        st.divider()
 
     return df_receitas_despesas,df_receitas_mensais             
         
