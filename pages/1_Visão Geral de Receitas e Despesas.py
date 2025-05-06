@@ -6,17 +6,16 @@ def main() -> None:
         df_formatado=st.session_state.df_formatado
 
         st.title("Visão geral de Receitas e Despesas") 
-
-        tabs = st.tabs(["Resumo do Mês", "Evolução Mensal"])
-        
         df_filtrado,df_filtrado_anterior,filtro_mes,data_referencia,numero_para_meses=filtrar_por_ano_mes(df_formatado)
         df_receitas_despesas=agrupar_df_filtrado_para_metricas(df_filtrado,filtro_mes)
         df_receitas_despesas_anterior=agrupar_df_filtrado_para_metricas(df_filtrado_anterior,filtro_mes)
         st.subheader(f"Resumo de {filtro_mes}")
         criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior,filtro_mes)
-        with tabs[0]:
 
+        tabs = st.tabs(["Resumo do Mês", "Evolução Mensal"])
         
+
+        with tabs[0]:
 
             df_receitas_mensais=agrupar_df_filtrado_para_grafico_receita(df_filtrado)
 
