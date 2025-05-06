@@ -18,7 +18,7 @@ def main() -> None:
         df_filtrado_clientes=filtrar_dataframes_para_graficos(df_clientes)
         df_filtrado_fornecedores=filtrar_dataframes_para_graficos(df_fornecedores)
 
-        criar_metricas(df_filtrado_clientes,df_filtrado_fornecedores,df_clientes)
+        criar_metricas(df_filtrado_clientes,df_filtrado_fornecedores)
 
         tabs = st.tabs(["Gráficos", "Transações Detalhadas"])
         with tabs[0]:
