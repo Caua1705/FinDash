@@ -79,8 +79,7 @@ def gerar_graficos(df_receitas_despesas,filtro_mes,df_formatado) -> None:
     fig2=px.line(df_evolucao_temporal,x="Mês",y="Valor",color="Tipo")
     st.plotly_chart(fig2)
    
-    # with col2:    
-    st.subheader("Total de Receitas e Despesas")
+    # with col2:        
     fig1=px.bar(df_receitas_despesas,x="Centro de Custo / Receita",y=["Receitas","Despesas"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title=f"Receitas e Despesas por Centro de Custo / Receita em {filtro_mes}")
     fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Centro de Custo / Receita",yaxis_title="Valor",showlegend=True)
     st.plotly_chart(fig1)
