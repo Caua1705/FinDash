@@ -7,14 +7,15 @@ def filtrar_por_ano_mes(df_formatado) -> tuple[pd.DataFrame,str,str]:
     numero_para_meses={1:"Janeiro",2:"Fevereiro",3:"Março",4:"Abril",5:"Maio",6:"Junho",7:"Julho",8:"Agosto",9:"Setembro",10:"Outubro",11:"Novembro",12:"Dezembro"}
     meses_para_numero={v:k for k, v in numero_para_meses.items()}
     ano=df_formatado["Data"].dt.year.unique()
-    st.markdown("### Filtros")
-    with col1:  
-        filtro_ano=st.sidebar.selectbox("Ano",ano)
-        meses_disponiveis=df_formatado.loc[df_formatado["Data"].dt.year == filtro_ano,"Data"].dt.month.unique()
-    with col2:  
-        filtro_mes=st.sidebar.selectbox("Mês:",[numero_para_meses[mes] for mes in meses_disponiveis])
-        df_filtrado=df_formatado.loc[(df_formatado["Data"].dt.year == filtro_ano) &
-                                     (df_formatado["Data"].dt.month == meses_para_numero[filtro_mes])]
+    with st.sidebar:
+        st.markdown("### Filtros")
+        with col1:  
+            filtro_ano=st.selectbox("Ano",ano)
+            meses_disponiveis=df_formatado.loc[df_formatado["Data"].dt.year == filtro_ano,"Data"].dt.month.unique()
+        with col2:  
+            filtro_mes=st.selectbox("Mês:",[numero_para_meses[mes] for mes in meses_disponiveis])
+            df_filtrado=df_formatado.loc[(df_formatado["Data"].dt.year == filtro_ano) &
+                                        (df_formatado["Data"].dt.month == meses_para_numero[filtro_mes])]
         data_filtrada=df_filtrado["Data"].iloc[0]
         data_referencia=data_filtrada.strftime("%Y-%m")
 
