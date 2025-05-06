@@ -71,17 +71,17 @@ def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior):
     st.divider()
 
 def gerar_graficos(df_receitas_despesas,filtro_mes,df_formatado) -> None:
-    # col1,col2=st.columns(2)
-    # with col1:    
-    st.subheader("Total de Receitas e Despesas")
-    fig1=px.bar(df_receitas_despesas,x="Centro de Custo / Receita",y=["Receitas","Despesas"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title=f"Receitas e Despesas por Centro de Custo / Receita em {filtro_mes}")
-    fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Centro de Custo / Receita",yaxis_title="Valor",showlegend=True)
-    st.plotly_chart(fig1)
+    col1,col2=st.columns(2)
+    with col1:    
+        st.subheader("Total de Receitas e Despesas")
+        fig1=px.bar(df_receitas_despesas,x="Centro de Custo / Receita",y=["Receitas","Despesas"],barmode="group",labels={"Categoria": "Categoria", "valor": "Valor"},title=f"Receitas e Despesas por Centro de Custo / Receita em {filtro_mes}")
+        fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Centro de Custo / Receita",yaxis_title="Valor",showlegend=True)
+        st.plotly_chart(fig1)
 
-    # with col2:               
-    st.subheader("Evolução Mensal")
-    df_formatado["Mês"]=df_formatado["Data"].dt.month
-    df_evolucao_temporal=df_formatado.groupby(["Mês","Tipo"])["Valor"].sum().reset_index()
-    fig2=px.line(df_evolucao_temporal,x="Mês",y="Valor",color="Tipo",markers=True)
-    fig2.update_layout(title="Evolução Mensal de Receitas e Despesas",xaxis_title="Mês",yaxis_title="Valor",showlegend=True)
-    st.plotly_chart(fig2)
+    with col2:               
+        st.subheader("Evolução Mensal")
+        df_formatado["Mês"]=df_formatado["Data"].dt.month
+        df_evolucao_temporal=df_formatado.groupby(["Mês","Tipo"])["Valor"].sum().reset_index()
+        fig2=px.line(df_evolucao_temporal,x="Mês",y="Valor",color="Tipo",markers=True)
+        fig2.update_layout(title="Evolução Mensal de Receitas e Despesas",xaxis_title="Mês",yaxis_title="Valor",showlegend=True)
+        st.plotly_chart(fig2)
