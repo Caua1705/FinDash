@@ -15,12 +15,15 @@ def main() -> None:
     
         df_receitas_despesas=agrupar_df_filtrado_para_metricas(df_filtrado,filtro_mes)
         df_receitas_despesas_anterior=agrupar_df_filtrado_para_metricas(df_filtrado_anterior,filtro_mes)
-
+        st.markdown(f"## Visão Geral do Mês de {filtro_mes}")
         criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior,filtro_mes)
 
         df_receitas_mensais=agrupar_df_filtrado_para_grafico_receita(df_filtrado)
 
+        st.markdown("## Análise Gráfica")
         gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) 
+
+        st.markdown("## Exportar Dados")
         criando_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia)
         # with tabs[1]:
         #     grafico_evolucao(df_formatado,numero_para_meses) 

@@ -3,7 +3,6 @@ import streamlit as st
 import pandas as pd
 
 def filtrar_por_ano_mes(df_formatado) -> tuple[pd.DataFrame,str,str]:
-    col1,col2=st.columns(2)
     numero_para_meses={1:"Janeiro",2:"Fevereiro",3:"Março",4:"Abril",5:"Maio",6:"Junho",7:"Julho",8:"Agosto",9:"Setembro",10:"Outubro",11:"Novembro",12:"Dezembro"}
     meses_para_numero={v:k for k, v in numero_para_meses.items()}
     ano=df_formatado["Data"].dt.year.unique()
@@ -42,7 +41,6 @@ def agrupar_df_filtrado_para_metricas(df_filtrado,filtro_mes) -> pd.DataFrame:
 
 def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior,filtro_mes):
     df_receitas_despesas=df_receitas_despesas.loc[df_receitas_despesas["Centro de Custo / Receita"]!="TOTAL"]
-    st.markdown(f"### Métricas de {filtro_mes}")
     col1,col2,col3,col4=st.columns(4)
     with col1:
         total_receitas=df_receitas_despesas["Receitas"].sum()
