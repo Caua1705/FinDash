@@ -29,7 +29,7 @@ def filtrar_por_ano_mes(df_formatado) -> tuple[pd.DataFrame,str,str]:
                                      (df_formatado["Data"].dt.month == mes_anterior)]
     return df_filtrado,df_filtrado_anterior,filtro_mes,data_referencia 
 
-def agrupar_df_filtrado(df_filtrado,filtro_mes) -> pd.DataFrame:
+def agrupar_df_filtrado_para_metricas(df_filtrado,filtro_mes) -> pd.DataFrame:
     if (df_filtrado["Tipo"] =="Receitas").all(): 
         st.error(f"O mês de {filtro_mes} não possui despesas.")
         st.stop()
@@ -70,7 +70,22 @@ def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior):
         st.metric("ROI Consolidado",f"{roi_consolidado:,.2f}%",f"{delta_roi:.2f}%")
     st.divider()
 
-def gerar_graficos(df_receitas_despesas,filtro_mes,df_formatado) -> None:
+def agrupar_df_filtrado_para_grafico_receita(df_filtrado):
+    receitas_mensais=df_filtrado.loc[df_filtrado["Tipo"]=="Receitas"]
+    df_receitas_mensais=receitas_mensais.groupby("Centro de Custo / Receita")["Valor"].sum().sort_values(ascending=False).reset_index()
+    df_receitas_mensais.loc[len(df_receitas_mensais)] = ["TOTAL",df_receitas_mensais["Valor"].sum()]
+    return df_receitas_mensais
+    if len(df_receitas_mensais)>2:
+        df_receitas_mensais=df_receitas_mensais.loc[0:2]
+    fig2=px.pie(df_receitas_mensais,names="Centro de Custo / Receita",values="Valor",title=f"Distribuição das maiores Receitas em {filtro_mes}",color="Centro de Custo / Receita")
+    fig2.update_traces(textinfo="percent+label")       
+    col2.plotly_chart(fig2)
+    st.divider()
+    return df_receitas_despesas,df_receitas_mensais
+
+
+def gerar_graficos(df_receitas_despesas,df_receitas_mensais,filtro_mes) -> None:
+
     col1,col2=st.columns(2)
     with col1:    
         st.subheader("Total de Receitas e Despesas")
@@ -78,14 +93,16 @@ def gerar_graficos(df_receitas_despesas,filtro_mes,df_formatado) -> None:
         fig1.update_layout(xaxis_tickangle=-45,xaxis_title="Centro de Custo / Receita",yaxis_title="Valor",showlegend=True)
         st.plotly_chart(fig1,use_container_width=True)
 
-    with col2:               
-        st.subheader("Evolução Mensal")
-        df_formatado["Mês"]=df_formatado["Data"].dt.month
-        df_evolucao_temporal=df_formatado.groupby(["Mês","Tipo"])["Valor"].sum().reset_index()
-        fig2=px.line(df_evolucao_temporal,x="Mês",y="Valor",color="Tipo",markers=True)
-        fig2.update_layout(title="Evolução Mensal de Receitas e Despesas",xaxis_title="Mês",yaxis_title="Valor",showlegend=True)
-        st.plotly_chart(fig2,use_container_width=True)
-
+    with col2:  
+        if len(df_receitas_mensais)>2:
+            df_receitas_mensais=df_receitas_mensais.loc[0:2]
+        fig2=px.pie(df_receitas_mensais,names="Centro de Custo / Receita",values="Valor",title=f"Distribuição das maiores Receitas em {filtro_mes}",color="Centro de Custo / Receita")
+        fig2.update_traces(textinfo="percent+label")       
+        col2.plotly_chart(fig2)
+        st.divider()
+        
+    return df_receitas_despesas,df_receitas_mensais             
+        
 
 
 
