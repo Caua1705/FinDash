@@ -8,6 +8,7 @@ def main() -> None:
         st.title("Visão geral de Receitas e Despesas") 
 
         tabs = st.tabs(["Resumo do Mês", "Evolução Mensal"])
+        
         with tabs[0]:
 
             df_filtrado,df_filtrado_anterior,filtro_mes,data_referencia,numero_para_meses=filtrar_por_ano_mes(df_formatado)
