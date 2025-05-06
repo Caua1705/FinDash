@@ -29,20 +29,20 @@ def filtrar_por_ano_mes(df_formatado) -> tuple[pd.DataFrame,str,str]:
                                      (df_formatado["Data"].dt.month == mes_anterior)]
     return df_filtrado,df_filtrado_anterior,filtro_mes,data_referencia 
 
-def agrupar_df(df_filtrado,filtro_mes) -> pd.DataFrame:
+def agrupar_df_filtrado(df_filtrado,filtro_mes) -> pd.DataFrame:
     if (df_filtrado["Tipo"] =="Receitas").all(): 
         st.error(f"O mês de {filtro_mes} não possui despesas.")
         st.stop()
     if (df_filtrado["Tipo"]=="Despesas").all(): 
         st.error(f"O mês de {filtro_mes} não possui receitas.")
         st.stop()
-    df_receitas_despesas=df_filtrado.pivot_table(index="Centro de Custo / Receita",
+    df_receitas_despesas=df_filtrado.pivot_table(index=["Centro de Custo / Receita","Data"],
                                                     columns="Tipo",
                                                     values="Valor",
                                                     aggfunc="sum",
                                                     fill_value=0,
                                                     ).reset_index()
-    df_receitas_despesas=df_receitas_despesas[["Centro de Custo / Receita","Receitas","Despesas"]]
+    df_receitas_despesas=df_receitas_despesas[["Data","Centro de Custo / Receita","Receitas","Despesas"]]
     df_receitas_despesas=df_receitas_despesas.sort_values(by="Receitas",ascending=False)
     return df_receitas_despesas
 
@@ -70,10 +70,15 @@ def criacao_metricas(df_receitas_despesas,df_receitas_despesas_anterior):
         st.metric("ROI Consolidado",f"{roi_consolidado:,.2f}%",f"{delta_roi:.2f}%")
     st.divider()
 
-def gerar_graficos(df_receitas_despesas,filtro_mes) -> None:
+def gerar_graficos(df_receitas_despesas,filtro_mes,df_formatado) -> None:
     col1,col2=st.columns(2)
     with col1:               
         st.subheader("Evolução Temporal das Receitas e Despesas")
+        df_formatado["Mês"]=df_formatado["Data"].dt.month
+        df_evolucao_temporal=df_formatado.groupby(["Mês","Tipo"])["Valor"].sum().reset_index()
+        fig2=px.line(df_evolucao_temporal,x="Mês",y="Valor",color="Tipo")
+        st.plotly_chart(fig2)
+        # st.write(df_evolucao_temporal)
     #     if len(df_receitas_mensais)>2:
     #         df_receitas_mensais=df_receitas_mensais.loc[0:2]
     #     fig2=px.pie(df_receitas_mensais,names="Centro de Custo / Receita",values="Valor",title=f"Distribuição das maiores Receitas em {filtro_mes}",color="Centro de Custo / Receita")
