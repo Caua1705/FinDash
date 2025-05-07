@@ -86,7 +86,7 @@ def gerar_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_selecionad
             
         wb=load_workbook(diretorio_arquivo_temporario)
         sheet1=wb["Receitas e Despesas"]
-        sheet2=wb["Receitas Mensais"]
+        sheet2=wb["Principais Receitas"]
         formatar_arquivo_excel(sheet1)
         formatar_arquivo_excel(sheet2)
         wb.save(diretorio_arquivo_temporario)
