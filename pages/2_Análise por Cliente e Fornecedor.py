@@ -1,31 +1,47 @@
 import streamlit as st
-from src.analise_clientes.tela_principal import filtrar_dataframes_para_graficos,gerar_graficos,criar_metricas,transacoes_detalhadas
+
+#Processamento de Dados
+from analise_clientes.processamento_dados.filtrar_dados import selecionar_data,filtrar_dados_data,selecionar_clientes_fornecedores
+from analise_clientes.processamento_dados.agrupar_dados import agrupar_dados
+
+#Métricas
+from analise_clientes.metricas.exibir_metricas import criar_metricas
+
+#Gráficos
+from analise_clientes.graficos.principais_clientes import exibir_grafico_principais_clientes
+from analise_clientes.graficos.principais_fornecedores import exibir_grafico_principais_fornecedores
+
+#Transações Detalhadas
+from analise_clientes.transaçoes_detalhadas.transacoes import exibir_transacoes
 
 def main() -> None:
     if "df_formatado" in st.session_state:
         df_formatado=st.session_state.df_formatado
         st.title("Análise por Cliente e Fornecedor")
 
-        data_inicial=st.sidebar.date_input("Data Inicial")
-        data_final=st.sidebar.date_input("Data Final")
-        if data_inicial>data_final:
-            st.error("A data inicial não pode ser maior que a data final")
-        df_filtrado=df_formatado.loc[(df_formatado["Data"].dt.date >= data_inicial ) & (df_formatado["Data"].dt.date <= data_final )]
+        #Filtragem de dados por data selecionada
+        data_inicial,data_final=selecionar_data()
+        df_filtrado=filtrar_dados_data(df_formatado,data_inicial,data_final)
+        df_clientes,df_fornecedores=selecionar_clientes_fornecedores(df_filtrado)
 
-        df_clientes=df_filtrado[df_filtrado["Tipo"]=="Receitas"]
-        df_fornecedores=df_filtrado[df_filtrado["Tipo"]=="Despesas"]
-        
-        df_filtrado_clientes=filtrar_dataframes_para_graficos(df_clientes)
-        df_filtrado_fornecedores=filtrar_dataframes_para_graficos(df_fornecedores)
+        #Agrupar dados
+        df_agrupado_clientes=agrupar_dados(df_clientes)
+        df_agrupado_fornecedores=agrupar_dados(df_fornecedores)
 
-        criar_metricas(df_filtrado_clientes,df_filtrado_fornecedores)
+        #Exibir Métricas
+        criar_metricas(df_agrupado_clientes,df_agrupado_fornecedores)
 
         tabs = st.tabs(["Gráficos", "Transações Detalhadas"])
+      
         with tabs[0]:
-            gerar_graficos(df_filtrado_clientes,df_filtrado_fornecedores)
+            #Gráficos: Principais Clientes + Principais Fornecedores
+            exibir_grafico_principais_clientes(df_agrupado_clientes)
+            exibir_grafico_principais_fornecedores(df_agrupado_fornecedores)
+
         with tabs[1]:
             st.markdown("### Detalhamento das Transações")
-            transacoes_detalhadas(df_filtrado)
+            #Exibir Transações Detalhadas 
+            exibir_transacoes(df_filtrado)
 
     else:
         st.warning("Faça o upload do arquivo!")

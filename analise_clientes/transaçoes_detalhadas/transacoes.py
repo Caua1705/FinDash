@@ -1,8 +1,6 @@
 import streamlit as st
-import pandas as pd
-import plotly.express as px
 
-def transacoes_detalhadas(df_filtrado):
+def exibir_transacoes(df_filtrado):
   valores_pesquisa=df_filtrado.loc[df_filtrado["Cliente / Fornecedor"]!="Desconhecido",
                                                       "Cliente / Fornecedor"].unique()
   valor_escolhido=st.selectbox("Selecione um Cliente ou Fornecedor",valores_pesquisa)

@@ -10,7 +10,7 @@ from visao_geral.metricas.exibir_metricas import exibir_metricas_financeiras
 #Gráficos
 from visao_geral.graficos.receitas_despesas import exibir_grafico_receitas_despesas
 from visao_geral.graficos.principais_receitas import exibir_grafico_principais_receitas
-from visao_geral.graficos.evolucao_mensal import exibir_evolucao_mensal
+from visao_geral.graficos.evolucao_mensal import exibir_grafico_evolucao_mensal
 
 #Exportação
 from visao_geral.exportar.criacao_arquivo_excel import gerar_arquivo_excel
@@ -38,7 +38,7 @@ def main() -> None:
         tabs = st.tabs(["Resumo do Mês", "  Evolução Mensal"])
 
         with tabs[0]:   
-            
+
             # Gráficos: Total de Receitas e Despesas + Principais Categorias de Receita
             col1,col2=st.columns(2)
             with col1:
@@ -56,7 +56,7 @@ def main() -> None:
 
         with tabs[1]:
             #Exibir gráfico de Evolução mensal 
-            exibir_evolucao_mensal(df_evolucao_mensal)
+            exibir_grafico_evolucao_mensal(df_evolucao_mensal)
 
     else:
         st.warning("Faça o upload do arquivo!")
