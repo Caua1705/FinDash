@@ -76,9 +76,9 @@ def formatar_arquivo_excel(sheet) -> None:
     grafico.y_axis.majorGridlines = None
     sheet.add_chart(grafico,"G1")
 
-def gerar_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia) -> None:
+def gerar_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_selecionada_formatada) -> None:
     with tempfile.TemporaryDirectory() as dir_temp:
-        nome_arquivo=f"Relatório mensal - {data_referencia}.xlsx"
+        nome_arquivo=f"Relatório mensal - {data_selecionada_formatada}.xlsx"
         diretorio_arquivo_temporario= Path(dir_temp) / nome_arquivo
         with pd.ExcelWriter(diretorio_arquivo_temporario) as escritor:
             df_receitas_despesas.to_excel(escritor,sheet_name="Receitas e Despesas",index=False)
@@ -97,6 +97,5 @@ def gerar_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_referencia
                                         data=arquivo,
                                         file_name=nome_arquivo,
                                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            st.divider()
-            st.caption("Desenvolvido por Cauã de Carvalho Oliveira Peixoto - Todos os direitos reservados © 2025")
+            
 
