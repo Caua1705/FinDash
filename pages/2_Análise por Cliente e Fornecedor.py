@@ -18,6 +18,7 @@ def main() -> None:
     if "df_formatado" in st.session_state:
         df_formatado=st.session_state.df_formatado
         st.title("Análise por Cliente e Fornecedor")
+        st.write(df_formatado)
 
         #Filtragem de dados por data selecionada
         data_inicial,data_final=selecionar_data()
