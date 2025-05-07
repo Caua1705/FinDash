@@ -82,7 +82,7 @@ def gerar_arquivo_excel(df_receitas_despesas,df_receitas_mensais,data_selecionad
         diretorio_arquivo_temporario= Path(dir_temp) / nome_arquivo
         with pd.ExcelWriter(diretorio_arquivo_temporario) as escritor:
             df_receitas_despesas.to_excel(escritor,sheet_name="Receitas e Despesas",index=False)
-            df_receitas_mensais.to_excel(escritor,sheet_name="Receitas Mensais",index=False)
+            df_receitas_mensais.to_excel(escritor,sheet_name="Principais Receitas",index=False)
             
         wb=load_workbook(diretorio_arquivo_temporario)
         sheet1=wb["Receitas e Despesas"]
