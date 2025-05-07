@@ -20,24 +20,24 @@ def main() -> None:
         df_formatado=st.session_state.df_formatado
         st.title("Visão geral de Receitas e Despesas") 
 
-        tabs = st.tabs(["Resumo do Mês", "Evolução Mensal"])
+        #Filtragem de dados por ano e mês selecionados
+        filtros=obter_filtros_ano_mes(df_formatado)
+        df_filtrado,df_filtrado_anterior=filtrar_dados_ano_mes(df_formatado,
+                                                                filtros["ano_escolhido"],
+                                                                filtros["mes_escolhido_numero"])
 
-        with tabs[0]:
+        #Agrupar Dados
+        df_receitas_despesas=agrupar_receitas_despesas(df_filtrado)
+        df_receitas_despesas_anterior=agrupar_receitas_despesas(df_filtrado_anterior)
+        df_receitas_mensais=agrupar_principais_receitas(df_filtrado)
+        df_evolucao_mensal=agrupar_evolucao_mensal(df_formatado,filtros["numero_para_meses"])
 
-            #Filtragem de dados por ano e mês selecionados
-            filtros=obter_filtros_ano_mes(df_formatado)
-            df_filtrado,df_filtrado_anterior=filtrar_dados_ano_mes(df_formatado,
-                                                                    filtros["ano_escolhido"],
-                                                                    filtros["mes_escolhido_numero"])
+        #Exibir Métricas
+        exibir_metricas_financeiras(df_receitas_despesas,df_receitas_despesas_anterior)
 
-            #Agrupar Dados
-            df_receitas_despesas=agrupar_receitas_despesas(df_filtrado)
-            df_receitas_despesas_anterior=agrupar_receitas_despesas(df_filtrado_anterior)
-            df_receitas_mensais=agrupar_principais_receitas(df_filtrado)
-            df_evolucao_mensal=agrupar_evolucao_mensal(df_formatado,filtros["numero_para_meses"])
+        tabs = st.tabs(["Resumo do Mês", "  Evolução Mensal"])
 
-            #Exibir Métricas
-            exibir_metricas_financeiras(df_receitas_despesas,df_receitas_despesas_anterior)
+        with tabs[0]:   
             
             # Gráficos: Total de Receitas e Despesas + Principais Categorias de Receita
             col1,col2=st.columns(2)
