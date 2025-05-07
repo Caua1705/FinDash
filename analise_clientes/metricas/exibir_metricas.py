@@ -6,12 +6,12 @@ def criar_metricas(df_clientes,df_fornecedores):
     with col1:
       principal_cliente=df_clientes.iloc[0,0]
       valor_principal_cliente=df_clientes.iloc[0,1]
-      st.metric("Top 1 Cliente",principal_cliente, f"R$ {valor_principal_cliente:.2f}")
+      st.metric(f"🏆 **{principal_cliente}**",f"R$ {valor_principal_cliente:.2f}")
 
     with col2:
       principal_fornecedor=df_fornecedores.iloc[0,0]
       valor_principal_fornecedor=df_fornecedores.iloc[0,1]
-      st.metric("Principal Fornecedor",principal_fornecedor, f"R$ {valor_principal_fornecedor:.2f}")
+      st.metric(f"🏆 **{principal_fornecedor}**",f"R$ {valor_principal_fornecedor}")
 
     with col3:
       ticket_medio_cliente=df_clientes["Receitas"].sum() / len(df_clientes)
