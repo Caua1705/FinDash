@@ -1,6 +1,7 @@
 import streamlit as st
 
 def exibir_transacoes(df_filtrado):
+  st.write(df_filtrado)
   valores_pesquisa=df_filtrado.loc[df_filtrado["Cliente / Fornecedor"]!="Desconhecido",
                                                       "Cliente / Fornecedor"].unique()
   valor_escolhido=st.selectbox("Selecione um Cliente ou Fornecedor",valores_pesquisa)
