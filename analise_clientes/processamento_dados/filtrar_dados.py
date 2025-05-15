@@ -6,7 +6,7 @@ def selecionar_data():
     data_inicial=st.sidebar.date_input("Data Inicial",agora - timedelta(days=30))
     data_final=st.sidebar.date_input("Data Final")
     if data_inicial>data_final:
-        st.error("A Data Inicial não pode ser maior que a Data Final.",agora)
+        st.error("A Data Inicial não pode ser maior que a Data Final.")
         st.stop()
     return data_inicial,data_final
 

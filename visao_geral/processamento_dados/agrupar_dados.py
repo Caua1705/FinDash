@@ -1,5 +1,5 @@
 import pandas as pd
-import streamlit as st
+
 def agrupar_receitas_despesas(df_filtrado) -> pd.DataFrame:
     df_receitas_despesas=df_filtrado.pivot_table(index=["Centro de Custo / Receita"],
                                                     columns="Tipo",
